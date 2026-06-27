@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>TableNorm — 表格列名标准化器</title>
+<style>
+/* ═══════════ 主题色 — 绿色 ═══════════ */
+:root {
+  --primary: #16a34a; --primary-dark: #15803d;
+  --accent: #22c55e; --accent-light: #f0fdf4;
+  --bg: #f8fafc; --card: #ffffff;
+  --border: #e2e8f0; --text: #0f172a; --muted: #64748b;
+  --success: #16a34a; --danger: #dc2626; --warning: #d97706;
+  --radius: 16px; --radius-sm: 10px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,0.08);
+  --transition: 0.25s cubic-bezier(0.4,0,0.2,1);
+  --unmapped-bg: #fef2f2; --partial-bg: #fffbeb; --mapped-bg: #f0fdf4;
+}
+[data-theme="dark"] {
+  --primary: #4ade80; --primary-dark: #22c55e;
+  --accent: #34d399; --accent-light: #052e16;
+  --bg: #0b1120; --card: #1e293b;
+  --border: #334155; --text: #f1f5f9; --muted: #94a3b8;
+  --unmapped-bg: #450a0a; --partial-bg: #451a03; --mapped-bg: #052e16;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;transition:background var(--transition),color var(--transition)}
+.container{max-width:1280px;margin:0 auto;padding:16px 20px}
+
+/* ── Header ── */
+.header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:16px 24px;margin-bottom:16px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+.header-brand{display:flex;align-items:center;gap:10px}
+.header-logo{font-size:32px}
+.header-title{font-size:22px;font-weight:800}
+.header-subtitle{font-size:13px;color:var(--muted)}
+.header-right{display:flex;align-items:center;gap:12px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--accent-light);color:var(--primary-dark);border-radius:20px;font-size:13px;font-weight:600}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;transition:all var(--transition);font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}
+.btn-outline:hover{background:var(--accent-light)}
+.btn-sm{padding:6px 14px;font-size:13px}
+.theme-toggle{width:40px;height:40px;border:2px solid var(--border);border-radius:50%;background:var(--card);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all var(--transition)}
+.theme-toggle:hover{border-color:var(--primary);transform:rotate(15deg)}
+
+/* ── Card ── */
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px;border:1px solid var(--border)}
+
+/* ── Upload ── */
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:40px 20px;text-align:center;cursor:pointer;transition:all .3s}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--primary);background:var(--accent-light)}
+.upload-icon{font-size:48px;margin-bottom:8px}
+.upload-title{font-size:16px;font-weight:600;margin-bottom:4px}
+.upload-hint{font-size:13px;color:var(--muted)}
+.upload-zone input[type="file"]{display:none}
+@keyframes uploadBreathe{0%,100%{border-color:var(--border)}50%{border-color:var(--primary)}}
+.upload-zone.idle{animation:uploadBreathe 3s ease-in-out infinite}
+
+/* ── Mapping Table ── */
+.mapping-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+.mapping-table th{background:var(--accent-light);padding:10px 14px;font-weight:700;text-align:left;border-bottom:2px solid var(--border)}
+.mapping-table td{padding:8px 14px;border-bottom:1px solid var(--border)}
+.mapping-table select{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;background:var(--card);color:var(--text)}
+.mapping-table select:focus{outline:none;border-color:var(--primary)}
+.row-unmapped{background:var(--unmapped-bg)}
+.row-partial{background:var(--partial-bg)}
+.row-mapped{background:var(--mapped-bg)}
+.conf-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600}
+.conf-high{background:#d1fae5;color:#065f46}
+.conf-mid{background:#fef3c7;color:#92400e}
+.conf-low{background:#fee2e2;color:#991b1b}
+
+/* ── Table ── */
+.table-wrap{overflow-x:auto;border-radius:var(--radius-sm);border:1px solid var(--border)}
+.table-wrap table{width:100%;border-collapse:collapse;font-size:13px}
+.table-wrap th{background:var(--accent-light);padding:8px 12px;font-weight:700;text-align:left;white-space:nowrap;border-bottom:2px solid var(--border);position:sticky;top:0}
+.table-wrap td{padding:6px 12px;border-bottom:1px solid var(--border);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.table-wrap tbody tr:hover td{background:var(--accent-light)}
+
+/* ── Toolbar ── */
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+
+/* ── Stats ── */
+.stats-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px}
+.stat-item{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--card);border-radius:20px;border:1px solid var(--border);font-weight:500}
+.stat-value{font-weight:700;color:var(--primary)}
+
+/* ── Toast ── */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);z-index:2000;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;color:#fff;background:#1e293b;box-shadow:var(--shadow-lg);animation:toastIn .3s ease}
+.toast.success{background:var(--success)}
+.toast.warn{background:var(--warning);color:#1e293b}
+.toast.error{background:var(--danger)}
+.toast.out{animation:toastOut .3s ease forwards}
+
+/* ── Modal ── */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);max-width:640px;width:90vw;max-height:80vh;display:flex;flex-direction:column;animation:slideUp .3s ease}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+.modal-title{font-size:18px;font-weight:700}
+.modal-close{width:36px;height:36px;border:none;background:transparent;font-size:24px;cursor:pointer;border-radius:50%;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.modal-close:hover{background:var(--border)}
+.modal-body{padding:24px;overflow-y:auto;flex:1}
+
+/* ── Footer ── */
+.footer{text-align:center;padding:16px;font-size:12px;color:var(--muted);border-top:1px solid var(--border);margin-top:24px}
+
+/* ── Animations ── */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(16px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(16px)}}
+
+/* ── Responsive ── */
+@media (max-width:900px){
+  .container{padding:10px 12px}
+  .header{padding:12px 16px}
+  .card{padding:16px}
+  .mapping-table td{padding:6px 8px}
+  .mapping-table select{font-size:12px}
+}
+@media (max-width:480px){
+  .header-title{font-size:16px}
+  .header-logo{font-size:24px}
+  .btn{padding:8px 14px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<div id="appLoader" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .3s">
+  <div style="text-align:center">
+    <div style="font-size:48px;margin-bottom:12px">🧹</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px">TableNorm</div>
+    <div style="font-size:13px;color:var(--muted)">组件加载中…</div>
+    <div style="width:120px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;overflow:hidden">
+      <div id="loaderBar" style="height:100%;width:0%;background:var(--primary);border-radius:2px;transition:width .3s"></div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+<header class="header">
+  <div class="header-brand">
+    <span class="header-logo">🧹</span>
+    <div>
+      <div class="header-title">TableNorm</div>
+      <div class="header-subtitle">表格列名标准化 — 统一各省职位表格式</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge" id="dataBadge">📭 等待上传</span>
+    <button class="theme-toggle" id="themeToggle" title="切换主题">🌙</button>
+  </div>
+</header>
+
+<!-- Upload -->
+<div class="card upload-zone idle" id="uploadZone">
+  <div class="upload-icon">📂</div>
+  <div class="upload-title">拖拽或点击上传职位表</div>
+  <div class="upload-hint">支持 .xlsx / .xls / .csv · 自动检测列名并标准化</div>
+  <input type="file" id="fileInput" multiple accept=".xlsx,.xls,.csv">
+</div>
+
+<!-- Mapping Review (hidden until upload) -->
+<div class="card" id="mappingCard" style="display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px">
+    <div>
+      <div style="font-weight:700;font-size:16px">🔍 列名映射检测</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:2px">自动检测每列对应的标准字段，您可手动调整</div>
+    </div>
+    <div class="toolbar">
+      <button class="btn btn-outline btn-sm" id="btnAutoMap">🪄 自动匹配</button>
+      <button class="btn btn-primary btn-sm" id="btnApply">✅ 应用标准化</button>
+    </div>
+  </div>
+  <div class="table-wrap" style="max-height:500px;overflow-y:auto">
+    <table class="mapping-table" id="mappingTable">
+      <thead><tr><th>原始列名</th><th>→ 标准字段</th><th>置信度</th><th>示例数据</th></tr></thead>
+      <tbody id="mappingBody"></tbody>
+    </table>
+  </div>
+  <div style="font-size:12px;color:var(--muted);margin-top:8px">
+    🟢 绿色=高置信 &nbsp; 🟡 黄色=中置信 &nbsp; 🔴 红色=未匹配 &nbsp; 未匹配列默认保留原名
+  </div>
+</div>
+
+<!-- Preview (hidden until apply) -->
+<div class="card" id="previewCard" style="display:none">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px">
+    <div>
+      <div style="font-weight:700;font-size:16px">📋 标准化预览</div>
+      <div style="font-size:13px;color:var(--muted)">
+        共 <span id="previewCount" style="font-weight:600;color:var(--primary)">0</span> 行数据，
+        映射了 <span id="previewColCount" style="font-weight:600;color:var(--primary)">0</span> 个标准字段
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="btn btn-outline btn-sm" id="btnBack">← 返回调整</button>
+      <button class="btn btn-primary btn-sm" id="btnExport">📥 导出标准 Excel</button>
+      <button class="btn btn-outline btn-sm" id="btnExportCSV">📄 导出 CSV</button>
+    </div>
+  </div>
+  <div class="table-wrap" style="max-height:500px;overflow:auto">
+    <table id="previewTable"><thead id="previewHead"></thead><tbody id="previewBody"></tbody></table>
+  </div>
+</div>
+
+<div class="footer">
+  ⚡ 数据不上传服务器，全部本地计算 &nbsp;|&nbsp; TableNorm v1.0.0
+</div>
+</div>
+
+<script src="https://cdn.bootcdn.net/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+var STATE = {
+  raw: [],           // 原始解析数据
+  headers: [],       // 原始列名
+  sampleData: [],    // 每个列的示例值
+  mappings: [],      // [{ original, target, confidence }]
+  normalized: [],    // 标准化后的数据
+  targetMap: {}      // 原始列名→标准字段名 的最终映射
+};
+
+// ═══════════════════════════════════════════════
+//  STANDARD SCHEMA — 目标标准字段
+// ═══════════════════════════════════════════════
+var STANDARD_FIELDS = [
+  { key: 'department',    label: '部门名称',     category: '基本信息' },
+  { key: 'title',         label: '职位名称',     category: '基本信息' },
+  { key: 'level',         label: '机构层级',     category: '基本信息' },
+  { key: 'attr',          label: '职位属性',     category: '基本信息' },
+  { key: 'examType',      label: '考试类别',     category: '基本信息' },
+  { key: 'count',         label: '招考人数',     category: '招录信息' },
+  { key: 'major',         label: '专业要求',     category: '资格条件' },
+  { key: 'education',     label: '学历要求',     category: '资格条件' },
+  { key: 'degree',        label: '学位要求',     category: '资格条件' },
+  { key: 'party',         label: '政治面貌',     category: '资格条件' },
+  { key: 'experience',    label: '基层工作年限', category: '资格条件' },
+  { key: 'otherReq',      label: '其他条件',     category: '资格条件' },
+  { key: 'province',      label: '省份',         category: '地点' },
+  { key: 'location',      label: '工作地点',     category: '地点' },
+  { key: 'interviewRatio',label: '面试比例',     category: '考试信息' },
+  { key: 'notes',         label: '备注',         category: '其他' }
+];
+
+// ═══════════════════════════════════════════════
+//  SYNONYM DICTIONARY — 列名同义词字典
+// ═══════════════════════════════════════════════
+var SYNONYM_DICT = {
+  department: [
+    '部门名称', '招录机关', '用人单位', '招录单位', '单位名称', '用人司局',
+    '招考单位', '录用单位', '招聘单位', '机关名称', '所属部门', '主管单位',
+    '招录部门', '录用机关', '单位', '部门'
+  ],
+  title: [
+    '招考职位', '职位名称', '招录职位', '岗位名称', '职位', '招聘岗位',
+    '招录岗位', '岗位', '招录职位名称', '招聘职位', '拟任职位',
+    '职务名称', '录用职位', '招考岗位', '招录名称'
+  ],
+  level: [
+    '机构层级', '机构性质', '单位层级', '层级', '单位性质', '机构级别',
+    '所属层级', '机关层级', '单位级别', '行政层级'
+  ],
+  attr: [
+    '职位属性', '职位类别', '岗位属性', '考试类别', '职位性质',
+    '招录属性', '岗位类别', '职位种类', '招考类别'
+  ],
+  examType: [
+    '考试类别', '考试类型', '试卷类别', '笔试试卷类别', '公共科目笔试类别',
+    '笔试类别', '试卷类型'
+  ],
+  count: [
+    '招考人数', '招录人数', '计划招录', '招录计划', '招录', '招聘人数',
+    '招录名额', '录取人数', '计划人数', '招聘数量', '人数', '招录数',
+    '招考数量', '录用人数', '拟招录人数'
+  ],
+  major: [
+    '专业', '专业要求', '学科', '所学专业', '专业名称', '报考专业',
+    '学科门类', '专业类别', '学科专业', '专业条件'
+  ],
+  education: [
+    '学历', '学历要求', '文化程度', '学历条件', '学历学位',
+    '最低学历', '学历层次', '教育程度'
+  ],
+  degree: [
+    '学位', '学位要求', '学位条件', '学历学位', '学位层次'
+  ],
+  party: [
+    '政治面貌', '政治面貌要求', '党派要求', '政治条件', '党员要求',
+    '政治身份', '面貌'
+  ],
+  experience: [
+    '基层工作最低年限', '基层经验', '基层工作年限', '工作年限',
+    '基层工作经历', '基层服务年限', '工作经验', '基层工作最低年限要求',
+    '服务基层项目工作经历', '基层经历'
+  ],
+  otherReq: [
+    '其他条件', '其他要求', '其他资格条件', '其他报考条件',
+    '附加条件', '其他', '其他限制条件', '其他资格要求'
+  ],
+  province: [
+    '地区', '省份', '所属地区', '所在省份', '工作所在地', '省',
+    '所属省份', '所在省'
+  ],
+  location: [
+    '工作地点', '工作地址', '地点', '所在地', '具体工作地点',
+    '落户地点', '工作所在地', '工作地区', '办公地点'
+  ],
+  interviewRatio: [
+    '面试比例', '面试人员比例', '面试人选比例', '面试入围比例',
+    '进面比例', '面试人数比例'
+  ],
+  notes: [
+    '备注', '备注信息', '说明', '其他说明', '补充说明',
+    '附注', '注意事项'
+  ]
+};
+
+// ═══════════════════════════════════════════════
+//  MATCHING ENGINE
+// ═══════════════════════════════════════════════
+function jaccardSimilarity(a, b) {
+  // 字符级 Jaccard 相似度
+  var sa = new Set(a.split(''));
+  var sb = new Set(b.split(''));
+  var intersection = 0;
+  sa.forEach(function(ch) { if (sb.has(ch)) intersection++; });
+  var union = sa.size + sb.size - intersection;
+  return union === 0 ? 0 : intersection / union;
+}
+
+function longestCommonSubstring(a, b) {
+  var maxLen = 0;
+  for (var i = 0; i < a.length; i++) {
+    for (var j = 0; j < b.length; j++) {
+      var k = 0;
+      while (i + k < a.length && j + k < b.length && a[i + k] === b[j + k]) k++;
+      if (k > maxLen) maxLen = k;
+    }
+  }
+  return maxLen / Math.max(a.length, b.length);
+}
+
+function scoreMatch(original, synonyms) {
+  // 对每个同义词计算匹配得分，返回最佳得分和匹配词
+  var best = { score: 0, synonym: '' };
+  var orig = original.replace(/\s+/g, ''); // 去空格
+  synonyms.forEach(function(syn) {
+    var s = syn.replace(/\s+/g, '');
+    var score = 0;
+    // 1. 精确匹配 → 1.0
+    if (orig === s) { score = 1.0; }
+    // 2. 包含匹配 → 0.9
+    else if (orig.indexOf(s) !== -1 || s.indexOf(orig) !== -1) { score = 0.9; }
+    // 3. 高 Jaccard + 公共子串
+    else {
+      var j = jaccardSimilarity(orig, s);
+      var l = longestCommonSubstring(orig, s);
+      score = j * 0.6 + l * 0.4;
+    }
+    if (score > best.score) { best = { score: score, synonym: syn }; }
+  });
+  return best;
+}
+
+function detectColumn(header) {
+  // 对原始列名，在所有标准字段的同义词中找最佳匹配
+  var bestOverall = { score: 0, target: '', synonym: '' };
+  Object.keys(SYNONYM_DICT).forEach(function(targetKey) {
+    var result = scoreMatch(header, SYNONYM_DICT[targetKey]);
+    if (result.score > bestOverall.score) {
+      bestOverall = { score: result.score, target: targetKey, synonym: result.synonym };
+    }
+  });
+  return bestOverall;
+}
+
+function getConfidenceLabel(score) {
+  if (score >= 0.9) return { cls: 'conf-high', text: '高' };
+  if (score >= 0.5) return { cls: 'conf-mid', text: '中' };
+  return { cls: 'conf-low', text: '低' };
+}
+
+function getRowClass(score) {
+  if (score >= 0.9) return 'row-mapped';
+  if (score >= 0.5) return 'row-partial';
+  return 'row-unmapped';
+}
+
+// ═══════════════════════════════════════════════
+//  UTILITIES
+// ═══════════════════════════════════════════════
+function formatNum(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+function esc(s) {
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(String(s)));
+  return d.innerHTML;
+}
+
+function toast(msg, type) {
+  var el = document.createElement('div');
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function() {
+    el.classList.add('out');
+    setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
+  }, 2000);
+}
+
+// ── Theme ──
+function toggleTheme() {
+  var cur = document.documentElement.getAttribute('data-theme');
+  var next = cur === 'dark' ? '' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  document.getElementById('themeToggle').textContent = next ? '☀️' : '🌙';
+  try { var s = JSON.parse(localStorage.getItem('tablenorm_settings') || '{}'); s.theme = next; localStorage.setItem('tablenorm_settings', JSON.stringify(s)); }
+  catch(e) {}
+}
+
+// ═══════════════════════════════════════════════
+//  FILE HANDLING
+// ═══════════════════════════════════════════════
+function handleFiles(files) {
+  if (!files || !files.length) return;
+  if (typeof XLSX === 'undefined') { toast('⚠️ 组件加载中，请稍后重试', 'warn'); return; }
+
+  var validFiles = [];
+  Array.from(files).forEach(function(f) {
+    if (f.size > 30 * 1024 * 1024) { toast('⚠️ 文件 ' + f.name + ' 超过30MB，已跳过', 'warn'); return; }
+    validFiles.push(f);
+  });
+  if (!validFiles.length) return;
+
+  var allRows = [];
+  var loaded = 0;
+  validFiles.forEach(function(file) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        var result = parseFile(e.target.result, file.name);
+        allRows = allRows.concat(result);
+      } catch(err) {
+        console.error(file.name + ': 解析失败', err);
+      }
+      loaded++;
+      if (loaded === validFiles.length) finishUpload(allRows, file.name);
+    };
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function parseFile(data, fileName) {
+  var ext = (fileName || '').split('.').pop().toLowerCase();
+
+  // CSV handling
+  if (ext === 'csv') {
+    var arr = new Uint8Array(data);
+    var raw = '';
+    for (var i = 0; i < arr.length; i++) raw += String.fromCharCode(arr[i]);
+    // Try UTF-8 first, then GBK
+    var text;
+    try { text = decodeURIComponent(escape(raw)); } catch(e) { text = raw; }
+    // GBK fallback: check for garbled characters
+    if (/[ï¿½]/.test(text) || /[\x80-\xff]{3,}/.test(text)) {
+      try {
+        var decoder = new TextDecoder('gbk');
+        text = decoder.decode(arr);
+      } catch(e) {}
+    }
+    // Simple CSV parse (handle quoted fields)
+    var lines = text.split(/\r?\n/).filter(function(l) { return l.trim(); });
+    if (!lines.length) return [];
+    var headers = parseCSVLine(lines[0]);
+    var rows = [];
+    for (var r = 1; r < lines.length; r++) {
+      var vals = parseCSVLine(lines[r]);
+      var obj = {};
+      for (var c = 0; c < headers.length; c++) obj[headers[c]] = (vals[c] || '');
+      rows.push(obj);
+    }
+    return rows;
+  }
+
+  // XLSX/XLS
+  var wb = XLSX.read(data, { type: 'array' });
+  var results = [];
+  wb.SheetNames.forEach(function(sn) {
+    if (/^(说明|汇总|统计|目录|Sheet)/i.test(sn)) return;
+    var ws = wb.Sheets[sn];
+    if (!ws) return;
+    var rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
+    if (!rows.length) return;
+
+    // Check if headers are on row 1 (common in Chinese spreadsheets with merged title rows)
+    var headers = Object.keys(rows[0]);
+    var testKws = ['部门', '职位', '专业', '学历', '地点', '省份', '招考', '招录', '单位'];
+    var matchCount = 0;
+    testKws.forEach(function(kw) {
+      for (var i = 0; i < headers.length; i++) { if (headers[i].indexOf(kw) !== -1) { matchCount++; break; } }
+    });
+    if (matchCount < 2) {
+      // Headers might be on row 2 — retry
+      var rawRows = XLSX.utils.sheet_to_json(ws, { defval: '', header: 1 });
+      if (rawRows.length >= 2) {
+        var newHeaders = rawRows[1];
+        rows = [];
+        for (var r = 2; r < rawRows.length; r++) {
+          var obj = {};
+          for (var c = 0; c < newHeaders.length; c++) obj[String(newHeaders[c] || '')] = rawRows[r][c] !== undefined ? rawRows[r][c] : '';
+          rows.push(obj);
+        }
+        console.warn(sn + ': 自动跳过说明行，使用第二行作为表头');
+      }
+    }
+    results = results.concat(rows);
+  });
+  return results;
+}
+
+function parseCSVLine(line) {
+  var result = [];
+  var current = '';
+  var inQuotes = false;
+  for (var i = 0; i < line.length; i++) {
+    var ch = line[i];
+    if (ch === '"') {
+      inQuotes = !inQuotes;
+    } else if (ch === ',' && !inQuotes) {
+      result.push(current.trim());
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  result.push(current.trim());
+  return result;
+}
+
+// ═══════════════════════════════════════════════
+//  CORE: DETECT & RENDER MAPPING
+// ═══════════════════════════════════════════════
+function finishUpload(allRows, fileName) {
+  if (!allRows.length) { toast('⚠️ 未能解析有效数据', 'warn'); return; }
+
+  STATE.raw = allRows;
+
+  // Extract headers and sample data
+  STATE.headers = Object.keys(allRows[0]);
+  STATE.sampleData = [];
+  var sampleSize = Math.min(3, allRows.length);
+  STATE.headers.forEach(function(h) {
+    var samples = [];
+    for (var i = 0; i < sampleSize; i++) {
+      var v = String(allRows[i][h] || '');
+      if (v) samples.push(v.length > 30 ? v.slice(0, 30) + '…' : v);
+    }
+    STATE.sampleData.push(samples.join(' | ') || '(空)');
+  });
+
+  // Detect mappings
+  STATE.mappings = STATE.headers.map(function(h) {
+    var result = detectColumn(h);
+    return { original: h, target: result.target, confidence: result.score, synonym: result.synonym };
+  });
+
+  // Update UI
+  document.getElementById('dataBadge').textContent = '📎 ' + formatNum(allRows.length) + ' 行 · ' + STATE.headers.length + ' 列';
+  document.getElementById('uploadZone').classList.remove('idle');
+  document.getElementById('mappingCard').style.display = '';
+  document.getElementById('previewCard').style.display = 'none';
+  renderMapping();
+  toast('✅ 成功解析 ' + formatNum(allRows.length) + ' 行数据，请确认列名映射', 'success');
+}
+
+function renderMapping() {
+  var html = '';
+  STATE.mappings.forEach(function(m, i) {
+    var conf = getConfidenceLabel(m.confidence);
+    var rowCls = getRowClass(m.confidence);
+    html += '<tr class="' + rowCls + '">';
+    html += '<td><strong>' + esc(m.original) + '</strong></td>';
+    html += '<td><select data-idx="' + i + '" class="target-select">';
+    html += '<option value="">-- 跳过 / 未知 --</option>';
+    var fieldKeys = Object.keys(SYNONYM_DICT);
+    fieldKeys.forEach(function(sk) {
+      var fi = STANDARD_FIELDS.find(function(f) { return f.key === sk; });
+      var label = fi ? fi.label : sk;
+      var sel = m.target === sk ? ' selected' : '';
+      html += '<option value="' + sk + '"' + sel + '>' + label + '</option>';
+    });
+    // Also add the raw "keep original" option
+    if (fieldKeys.indexOf(m.target) === -1 && m.target) {
+      html += '<option value="' + esc(m.target) + '" selected>自定义: ' + esc(m.target) + '</option>';
+    }
+    html += '</select></td>';
+    html += '<td><span class="conf-badge ' + conf.cls + '">' + conf.text + ' · ' + Math.round(m.confidence * 100) + '%</span></td>';
+    html += '<td style="font-size:12px;color:var(--muted)">' + esc(STATE.sampleData[i]) + '</td>';
+    html += '</tr>';
+  });
+  document.getElementById('mappingBody').innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════
+//  APPLY MAPPING: NORMALIZE
+// ═══════════════════════════════════════════════
+function applyNormalization() {
+  // Read current mapping from selects
+  var targetMap = {};
+  var selects = document.querySelectorAll('.target-select');
+  selects.forEach(function(sel) {
+    var idx = parseInt(sel.getAttribute('data-idx'));
+    var target = sel.value;
+    if (target) {
+      targetMap[STATE.mappings[idx].original] = target;
+    }
+  });
+  STATE.targetMap = targetMap;
+
+  // Build normalized data
+  var standardKeys = STANDARD_FIELDS.map(function(f) { return f.key; });
+  STATE.normalized = STATE.raw.map(function(row) {
+    var obj = {};
+    // Initialize all standard fields
+    standardKeys.forEach(function(k) { obj[k] = ''; });
+    // Map
+    Object.keys(targetMap).forEach(function(origCol) {
+      var stdKey = targetMap[origCol];
+      obj[stdKey] = row[origCol] !== undefined ? row[origCol] : '';
+    });
+    return obj;
+  });
+
+  renderPreview();
+  document.getElementById('previewCard').style.display = '';
+  document.getElementById('previewCard').scrollIntoView({ behavior: 'smooth' });
+  toast('✅ 已应用标准化，' + Object.keys(targetMap).length + ' 列已映射', 'success');
+}
+
+function renderPreview() {
+  var standardKeys = STANDARD_FIELDS.map(function(f) { return f.key; });
+  var mappedKeys = Object.values(STATE.targetMap);
+  // Only show columns that have data
+  var activeKeys = standardKeys.filter(function(k) {
+    if (mappedKeys.indexOf(k) === -1) return false;
+    for (var i = 0; i < Math.min(10, STATE.normalized.length); i++) {
+      if (STATE.normalized[i][k]) return true;
+    }
+    return false;
+  });
+
+  document.getElementById('previewCount').textContent = formatNum(STATE.normalized.length);
+  document.getElementById('previewColCount').textContent = activeKeys.length;
+
+  // Header
+  var headerHtml = '<tr>';
+  activeKeys.forEach(function(k) {
+    var fi = STANDARD_FIELDS.find(function(f) { return f.key === k; });
+    headerHtml += '<th>' + (fi ? fi.label : k) + '</th>';
+  });
+  headerHtml += '</tr>';
+  document.getElementById('previewHead').innerHTML = headerHtml;
+
+  // Body (show first 100 rows)
+  var bodyHtml = '';
+  var showRows = Math.min(STATE.normalized.length, 100);
+  for (var r = 0; r < showRows; r++) {
+    bodyHtml += '<tr>';
+    activeKeys.forEach(function(k) {
+      bodyHtml += '<td>' + esc(String(STATE.normalized[r][k] || '')) + '</td>';
+    });
+    bodyHtml += '</tr>';
+  }
+  if (STATE.normalized.length > 100) {
+    bodyHtml += '<tr><td colspan="' + activeKeys.length + '" style="text-align:center;color:var(--muted);padding:16px">… 还有 ' + formatNum(STATE.normalized.length - 100) + ' 行未显示</td></tr>';
+  }
+  document.getElementById('previewBody').innerHTML = bodyHtml;
+}
+
+// ═══════════════════════════════════════════════
+//  EXPORT
+// ═══════════════════════════════════════════════
+function exportExcel() {
+  if (!STATE.normalized.length) { toast('⚠️ 没有数据可导出', 'warn'); return; }
+  var standardKeys = STANDARD_FIELDS.map(function(f) { return f.key; });
+  var mappedKeys = Object.values(STATE.targetMap);
+  var activeKeys = standardKeys.filter(function(k) { return mappedKeys.indexOf(k) !== -1; });
+
+  var exportData = STATE.normalized.map(function(row) {
+    var obj = {};
+    activeKeys.forEach(function(k) {
+      var fi = STANDARD_FIELDS.find(function(f) { return f.key === k; });
+      obj[fi ? fi.label : k] = row[k];
+    });
+    return obj;
+  });
+
+  var ws = XLSX.utils.json_to_sheet(exportData);
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '标准化数据');
+  XLSX.writeFile(wb, 'TableNorm_标准化_' + new Date().toISOString().slice(0, 10) + '.xlsx');
+  toast('📥 已导出标准 Excel', 'success');
+}
+
+function exportCSV() {
+  if (!STATE.normalized.length) { toast('⚠️ 没有数据可导出', 'warn'); return; }
+  var standardKeys = STANDARD_FIELDS.map(function(f) { return f.key; });
+  var mappedKeys = Object.values(STATE.targetMap);
+  var activeKeys = standardKeys.filter(function(k) { return mappedKeys.indexOf(k) !== -1; });
+
+  var headers = activeKeys.map(function(k) {
+    var fi = STANDARD_FIELDS.find(function(f) { return f.key === k; });
+    return fi ? fi.label : k;
+  });
+
+  var csv = '﻿' + headers.join(',') + '\n';
+  STATE.normalized.forEach(function(row) {
+    csv += activeKeys.map(function(k) {
+      var v = String(row[k] || '').replace(/"/g, '""');
+      return '"' + v + '"';
+    }).join(',') + '\n';
+  });
+
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'TableNorm_标准化_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📄 已导出 CSV', 'success');
+}
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+function init() {
+  // Hide skeleton
+  (function hideLoader() {
+    var loader = document.getElementById('appLoader');
+    if (!loader) return;
+    if (typeof XLSX !== 'undefined') {
+      loader.style.opacity = '0';
+      setTimeout(function() { if (loader.parentNode) loader.parentNode.removeChild(loader); }, 300);
+    } else {
+      // Poll for XLSX
+      var iv = setInterval(function() {
+        if (typeof XLSX !== 'undefined') {
+          clearInterval(iv);
+          loader.style.opacity = '0';
+          setTimeout(function() { if (loader.parentNode) loader.parentNode.removeChild(loader); }, 300);
+        }
+      }, 200);
+      setTimeout(function() { clearInterval(iv); if (loader.parentNode) loader.parentNode.removeChild(loader); }, 15000);
+    }
+  })();
+
+  // Theme restore
+  try {
+    var saved = JSON.parse(localStorage.getItem('tablenorm_settings') || '{}');
+    if (saved.theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  } catch(e) {}
+  document.getElementById('themeToggle').textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+  // Upload zone
+  var uz = document.getElementById('uploadZone'), fi = document.getElementById('fileInput');
+  uz.addEventListener('click', function() { fi.click(); });
+  uz.addEventListener('dragover', function(e) { e.preventDefault(); uz.classList.add('dragover'); });
+  uz.addEventListener('dragleave', function() { uz.classList.remove('dragover'); });
+  uz.addEventListener('drop', function(e) { e.preventDefault(); uz.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+  fi.addEventListener('change', function() { handleFiles(fi.files); });
+
+  // Buttons
+  document.getElementById('btnAutoMap').addEventListener('click', function() {
+    STATE.mappings = STATE.headers.map(function(h) {
+      var result = detectColumn(h);
+      return { original: h, target: result.target, confidence: result.score, synonym: result.synonym };
+    });
+    renderMapping();
+    toast('🪄 已重新匹配', 'success');
+  });
+  document.getElementById('btnApply').addEventListener('click', applyNormalization);
+  document.getElementById('btnBack').addEventListener('click', function() {
+    document.getElementById('previewCard').style.display = 'none';
+    document.getElementById('mappingCard').scrollIntoView({ behavior: 'smooth' });
+  });
+  document.getElementById('btnExport').addEventListener('click', exportExcel);
+  document.getElementById('btnExportCSV').addEventListener('click', exportCSV);
+
+  // CDN fallback
+  if (typeof XLSX === 'undefined') {
+    setTimeout(function() {
+      if (typeof XLSX === 'undefined') {
+        document.getElementById('uploadZone').innerHTML = '<div class="upload-icon">⚠️</div><div class="upload-title">库加载失败</div><div class="upload-hint">SheetJS 未能加载，请检查网络后刷新页面</div>';
+      }
+    }, 10000);
+  }
+
+  // Test mode
+  if (window.location.search.indexOf('test=1') !== -1) setTimeout(runTests, 500);
+}
+
+// ═══════════════════════════════════════════════
+//  EMBEDDED TESTS
+// ═══════════════════════════════════════════════
+function runTests() {
+  var results = [];
+  function t(name, fn) {
+    try { results.push({ name: name, pass: !!fn() }); }
+    catch(e) { results.push({ name: name, pass: false, error: e.message }); }
+  }
+
+  // Matching engine tests
+  t('exact match: 部门名称→department', function() {
+    var r = detectColumn('部门名称');
+    return r.target === 'department' && r.score === 1.0;
+  });
+  t('exact match: 专业→major', function() {
+    var r = detectColumn('专业');
+    return r.target === 'major' && r.score === 1.0;
+  });
+  t('fuzzy match: 招录机关→department', function() {
+    var r = detectColumn('招录机关');
+    return r.target === 'department' && r.score >= 0.9;
+  });
+  t('fuzzy match: 招考人数→count', function() {
+    var r = detectColumn('招考人数');
+    return r.target === 'count' && r.score >= 0.9;
+  });
+  t('fuzzy match: 政治面貌→party', function() {
+    var r = detectColumn('政治面貌');
+    return r.target === 'party' && r.score >= 0.9;
+  });
+  t('partial match: 学历要求→education', function() {
+    var r = detectColumn('学历要求');
+    return r.target === 'education';
+  });
+  t('partial match: 基层工作最低年限→experience', function() {
+    var r = detectColumn('基层工作最低年限');
+    return r.target === 'experience';
+  });
+  t('unrelated column scores low', function() {
+    var r = detectColumn('ABCDEFG');
+    return r.score < 0.5;
+  });
+
+  // Jaccard similarity
+  t('jaccard same string = 1', function() { return jaccardSimilarity('abc', 'abc') === 1; });
+  t('jaccard different strings = 0', function() { return jaccardSimilarity('abc', 'xyz') === 0; });
+
+  // Schema
+  t('STANDARD_FIELDS has 16 fields', function() { return STANDARD_FIELDS.length === 16; });
+  t('SYNONYM_DICT covers all fields', function() {
+    return STANDARD_FIELDS.every(function(f) { return SYNONYM_DICT[f.key] && SYNONYM_DICT[f.key].length > 0; });
+  });
+
+  // Utilities
+  t('formatNum', function() { return formatNum(12345) === '12,345'; });
+  t('esc HTML', function() { return esc('<b>').indexOf('&lt;') !== -1; });
+
+  // Output
+  var passed = results.filter(function(r) { return r.pass; }).length;
+  var total = results.length;
+  var color = passed === total ? 'green' : 'orange';
+  console.log('%c📋 TableNorm Tests: ' + passed + '/' + total + ' passed', 'font-size:16px;font-weight:bold;color:' + color);
+  results.forEach(function(r) { console.log(r.pass ? '  ✅' : '  ❌', r.name, r.error ? '(' + r.error + ')' : ''); });
+  if (passed < total) console.warn('⚠ ' + (total - passed) + ' tests failed');
+  else console.log('✅ All tests passed!');
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+</script>
+</body>
+</html>
