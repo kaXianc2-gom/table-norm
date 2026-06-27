@@ -1,5 +1,9 @@
 # TableNorm — 表格列名标准化
 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Version](https://img.shields.io/badge/version-1.2.0-brightgreen)](https://github.com/kaXianc2-gom/table-norm/releases)
+[![Pages](https://img.shields.io/badge/demo-online-0078D4)](https://kaXianc2-gom.github.io/table-norm/)
+
 > 各省职位表列名五花八门——"招录机关"、"用人单位"、"招考单位"——自动映射到 16 个标准字段，一键导出。
 
 单文件 HTML，双击即用。拖入 Excel 自动检测列名、显示匹配结果、人工微调、导出标准化文件。
@@ -50,6 +54,18 @@
 | location | 工作地点 |
 | interviewRatio | 面试比例 |
 | notes | 备注 |
+
+## 🌐 在线体验
+
+无需下载，直接使用：**[🔗 在线 Demo](https://kaXianc2-gom.github.io/table-norm/)**
+
+## 🔐 隐私声明
+
+- **数据不上传**：所有列名检测、标准化处理均在浏览器本地内存中完成
+- **无网络请求**：SheetJS 已内联，运行时零外部请求
+- **无持久化存储**：关闭浏览器后数据自动清除
+
+> ⚠️ **免责声明**：本工具仅供数据整理与参考辅助。标准化结果请以原始文件为准。
 
 ## 技术
 
