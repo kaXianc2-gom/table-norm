@@ -1,7 +1,7 @@
 # TableNorm — 表格列名标准化
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-1.2.0-brightgreen)](https://github.com/kaXianc2-gom/table-norm/releases)
+[![Version](https://img.shields.io/badge/version-1.2.1-brightgreen)](https://github.com/kaXianc2-gom/table-norm/releases)
 [![Pages](https://img.shields.io/badge/demo-online-0078D4)](https://kaXianc2-gom.github.io/table-norm/)
 
 > 各省职位表列名五花八门——"招录机关"、"用人单位"、"招考单位"——自动映射到 16 个标准字段，一键导出。
