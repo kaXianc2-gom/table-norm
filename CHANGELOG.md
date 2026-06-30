@@ -1,3 +1,16 @@
+## [2.0.0] - 2026-06-30
+
+### Added
+- 键盘可访问性 (focus-visible outline)
+- 自定义滚动条样式 (webkit-scrollbar)
+- 减弱动画支持 (prefers-reduced-motion)
+- 响应式布局优化 (768px/480px 断点)
+- 打印样式 (print media query)
+
+### Fixed
+- 多项 Bug 修复和功能增强
+- UI 一致性和交互体验优化
+
 # 更新日志
 
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，版本号遵循 [语义化版本](https://semver.org/lang/zh-CN/)。

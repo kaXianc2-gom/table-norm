@@ -50,8 +50,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 .btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}
 .btn-outline:hover{background:var(--accent-light)}
 .btn-sm{padding:6px 14px;font-size:13px}
-.theme-toggle{width:40px;height:40px;border:2px solid var(--border);border-radius:50%;background:var(--card);cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center;transition:all var(--spring)}
+.btn-demo{background:linear-gradient(135deg,#fef3c7,#fde68a);color:#92400e;border:1px solid rgba(146,64,14,0.15)}
+.btn-demo:hover{background:linear-gradient(135deg,#fde68a,#fcd34d);transform:translateY(-1px)}
+[data-theme="dark"] .btn-demo{background:linear-gradient(135deg,#451a03,#78350f);color:#fde68a;border-color:rgba(253,230,138,0.2)}
+[data-theme="dark"] .btn-demo:hover{background:linear-gradient(135deg,#78350f,#92400e)}
+.theme-toggle{width:40px;height:40px;border:2px solid var(--border);border-radius:50%;background:var(--card);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--spring);color:var(--text);font-size:18px;padding:0}
 .theme-toggle:hover{border-color:var(--primary);transform:rotate(15deg)}
+.theme-toggle .icon{width:18px;height:18px;vertical-align:middle}
+
+/* ── Upload (split) ── */
+.upload-zone .upload-actions{display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.divider-or{display:inline-flex;align-items:center;gap:8px;color:var(--muted);font-size:12px;margin:0 4px}
+.divider-or::before,.divider-or::after{content:"";width:24px;height:1px;background:var(--border)}
 
 /* ── Card ── */
 .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:16px;border:1px solid var(--border)}
@@ -68,60 +78,104 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 
 /* ── Mapping Table ── */
 .mapping-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
-.mapping-table th{background:var(--accent-light);padding:10px 14px;font-weight:700;text-align:left;border-bottom:2px solid var(--border)}
+.mapping-table th{background:var(--accent-light);padding:10px 14px;font-weight:700;text-align:left;border-bottom:2px solid var(--border);position:sticky;top:0;z-index:2}
 .mapping-table td{padding:8px 14px;border-bottom:1px solid var(--border)}
 .mapping-table select{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:inherit;background:var(--card);color:var(--text)}
 .mapping-table select:focus{outline:none;border-color:var(--primary)}
 .row-unmapped{background:var(--unmapped-bg)}
 .row-partial{background:var(--partial-bg)}
 .row-mapped{background:var(--mapped-bg)}
-.conf-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:12px;font-weight:600}
-.conf-high{background:#d1fae5;color:#065f46}
-.conf-mid{background:#fef3c7;color:#92400e}
-.conf-low{background:#fee2e2;color:#991b1b}
+.mapping-table td.sample-cell{font-size:12px;color:var(--muted);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.conf-badge{display:inline-block;padding:3px 9px;border-radius:10px;font-size:12px;font-weight:700;letter-spacing:0.02em}
+.more-rows-note{text-align:center;color:var(--muted);padding:16px;font-size:13px}
+/* 增强对比度：背景更深、文字更深 */
+.conf-high{background:#15803d;color:#ffffff}
+.conf-mid{background:#b45309;color:#ffffff}
+.conf-low{background:#b91c1c;color:#ffffff}
+[data-theme="dark"] .conf-high{background:#34d399;color:#052e16}
+[data-theme="dark"] .conf-mid{background:#fbbf24;color:#451a03}
+[data-theme="dark"] .conf-low{background:#f87171;color:#450a0a}
 
 /* ── Table ── */
-.table-wrap{overflow-x:auto;border-radius:var(--radius-sm);border:1px solid var(--border)}
+.table-wrap{overflow:auto;border-radius:var(--radius-sm);border:1px solid var(--border)}
 .table-wrap table{width:100%;border-collapse:collapse;font-size:13px}
-.table-wrap th{background:var(--accent-light);padding:8px 12px;font-weight:700;text-align:left;white-space:nowrap;border-bottom:2px solid var(--border);position:sticky;top:0}
+.table-wrap th{background:var(--accent-light);padding:8px 12px;font-weight:700;text-align:left;white-space:nowrap;border-bottom:2px solid var(--border);position:sticky;top:0;z-index:3;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 .table-wrap td{padding:6px 12px;border-bottom:1px solid var(--border);max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .table-wrap tbody tr:hover td{background:var(--accent-light)}
 
 /* ── Toolbar ── */
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 
-/* ── Stats ── */
-.stats-bar{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;font-size:14px}
-.stat-item{display:flex;align-items:center;gap:6px;padding:6px 14px;background:var(--card);border-radius:20px;border:1px solid var(--border);font-weight:500}
-.stat-value{font-weight:700;color:var(--primary)}
+/* ── Search Input ── */
+.search-input{width:100%;padding:8px 12px 8px 32px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:13px;transition:all var(--transition)}
+.search-input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(22,163,74,0.12)}
+.search-input::placeholder{color:var(--muted)}
+
+/* ── Mapping Stats ── */
+.mapping-stats{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.ms-pill{display:inline-flex;align-items:center;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:600;border:1px solid transparent}
+.ms-pill--total{background:var(--accent-light);color:var(--primary-dark);border-color:var(--border)}
+.ms-pill--high{background:#15803d;color:#fff}
+.ms-pill--mid{background:#b45309;color:#fff}
+.ms-pill--low{background:#b91c1c;color:#fff}
+.ms-pill--manual{background:#7c3aed;color:#fff}
+[data-theme="dark"] .ms-pill--high{background:#34d399;color:#052e16}
+[data-theme="dark"] .ms-pill--mid{background:#fbbf24;color:#451a03}
+[data-theme="dark"] .ms-pill--low{background:#f87171;color:#450a0a}
+[data-theme="dark"] .ms-pill--manual{background:#a78bfa;color:#1e1b4b}
+
+/* ── Modal ── */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:3000;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s ease}
+.modal{background:var(--card);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:var(--radius);padding:24px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg);position:relative;animation:slideUp .25s var(--spring)}
+.modal-close{position:absolute;top:12px;right:12px;background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);width:32px;height:32px;border-radius:50%;transition:all var(--transition);display:flex;align-items:center;justify-content:center;line-height:1}
+.modal-close:hover{background:var(--accent-light);color:var(--primary)}
+
+/* ── Preset List ── */
+.preset-list{display:flex;flex-direction:column;gap:8px}
+.preset-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--bg)}
+.preset-meta{flex:1;min-width:0}
+.preset-name{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.preset-info{font-size:12px;color:var(--muted);margin-top:2px}
+.preset-actions{display:flex;gap:6px;flex-shrink:0}
+
+/* ── Custom Field ── */
+.cf-input{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font:inherit;font-size:13px}
+.cf-input:focus{outline:none;border-color:var(--primary)}
+.cf-list{display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto}
+.cf-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);font-size:13px}
+.cf-item code{background:var(--accent-light);color:var(--primary-dark);padding:2px 6px;border-radius:4px;font-size:11px}
 
 /* ── Toast ── */
-.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);z-index:2000;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;color:#fff;background:rgba(30,30,32,0.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:var(--shadow-lg);animation:toastIn .3s ease}
+.toast{display:inline-flex;align-items:center;gap:10px;position:fixed;bottom:32px;left:50%;transform:translateX(-50%);z-index:2000;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:600;color:#fff;background:rgba(30,30,32,0.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:var(--shadow-lg);animation:toastIn .3s ease}
 .toast.success{background:var(--success)}
 .toast.warn{background:var(--warning);color:#1e293b}
 .toast.error{background:var(--danger)}
 .toast.out{animation:toastOut .3s ease forwards}
+.toast .icon{width:18px;height:18px;flex-shrink:0}
 
-/* ── Modal ── */
-.modal-overlay{display:none;position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.5);align-items:center;justify-content:center}
-.modal-overlay.open{display:flex}
-.modal-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow-lg);max-width:640px;width:90vw;max-height:80vh;display:flex;flex-direction:column;animation:slideUp .3s ease}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
-.modal-title{font-size:18px;font-weight:700}
-.modal-close{width:36px;height:36px;border:none;background:transparent;font-size:24px;cursor:pointer;border-radius:50%;color:var(--muted);display:flex;align-items:center;justify-content:center}
-.modal-close:hover{background:var(--border)}
-.modal-body{padding:24px;overflow-y:auto;flex:1}
+/* ── Demo banner ── */
+.demo-banner{display:none;align-items:center;gap:10px;padding:10px 14px;margin-bottom:12px;background:linear-gradient(135deg,rgba(254,243,199,0.6),rgba(253,230,138,0.4));border:1px solid rgba(217,119,6,0.25);border-radius:var(--radius-sm);font-size:13px;color:#78350f}
+.demo-banner.show{display:flex}
+.demo-banner .icon{color:#92400e}
+[data-theme="dark"] .demo-banner{background:linear-gradient(135deg,rgba(120,53,15,0.35),rgba(146,64,14,0.25));color:#fde68a;border-color:rgba(253,230,138,0.2)}
+[data-theme="dark"] .demo-banner .icon{color:#fcd34d}
+.demo-banner-content{flex:1}
+.demo-banner-dismiss{background:none;border:none;color:inherit;cursor:pointer;opacity:.6;font-size:16px;padding:0 4px;line-height:1}
+.demo-banner-dismiss:hover{opacity:1}
 
 /* ── Footer ── */
 .footer{text-align:center;padding:16px;font-size:12px;color:var(--muted);border-top:1px solid var(--border);margin-top:24px}
+
+/* ── Icons (inline SVG) ── */
+.icon{display:inline-block;width:1.1em;height:1.1em;vertical-align:-0.18em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.icon-lg{width:1.6em;height:1.6em;vertical-align:-0.25em}
+.icon-xl{width:3em;height:3em;vertical-align:-0.4em}
 
 /* ── Animations ── */
 @keyframes pageEnter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pageEnter{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(16px) scale(0.92)}to{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}}
 @keyframes toastOut{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(16px)}}
 @keyframes rowReveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -146,19 +200,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 .atmo .orb:nth-child(1){width:60vw;height:60vw;background:radial-gradient(circle,rgba(210,160,100,0.12),transparent);top:-25vh;left:-20vw}
 .atmo .orb:nth-child(2){width:50vw;height:50vw;background:radial-gradient(circle,rgba(100,175,165,0.09),transparent);bottom:-20vh;right:-15vw}
 .grid-texture{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.18;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 70% 55% at 50% 45%,black 15%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse 70% 55% at 50% 45%,black 15%,transparent 70%)}
-.page-exit-overlay{position:fixed;inset:0;z-index:9999;background:var(--bg);opacity:0;pointer-events:none;transition:opacity 0.3s ease}.page-exit-overlay.go{opacity:1;pointer-events:all}
 
+
+/* ── A11y & Polish ── */
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+::selection{background:var(--primary);color:#fff}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
 </style>
 </head>
 <body>
 
 <div class="atmo"><div class="orb"></div><div class="orb"></div></div>
 <div class="grid-texture"></div>
-<div class="page-exit-overlay" id="exitOverlay"></div>
 
 <div id="appLoader" style="position:fixed;inset:0;z-index:9999;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity .3s">
   <div style="text-align:center">
-    <div style="font-size:48px;margin-bottom:12px">🧹</div>
+    <div style="margin-bottom:16px;color:var(--primary)">
+      <svg class="icon icon-xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.71 0L2.36 18.7a1.21 1.21 0 0 0 0 1.71l1.28 1.28a1.21 1.21 0 0 0 1.71 0L21.64 5.35a1.21 1.21 0 0 0 0-1.71z"/><path d="m14 7 3 3"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M21 19h-4"/></svg>
+    </div>
     <div style="font-size:18px;font-weight:700;margin-bottom:4px">TableNorm</div>
     <div style="font-size:13px;color:var(--muted)">组件加载中…</div>
     <div style="width:120px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 0;overflow:hidden">
@@ -170,37 +233,76 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 <div class="container">
 <header class="header">
   <div class="header-brand">
-    <span class="header-logo">🧹</span>
+    <span class="header-logo" style="display:inline-flex;align-items:center;justify-content:center;color:var(--primary)">
+      <svg class="icon icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.71 0L2.36 18.7a1.21 1.21 0 0 0 0 1.71l1.28 1.28a1.21 1.21 0 0 0 1.71 0L21.64 5.35a1.21 1.21 0 0 0 0-1.71z"/><path d="m14 7 3 3"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M21 19h-4"/></svg>
+    </span>
     <div>
       <div class="header-title">TableNorm</div>
       <div class="header-subtitle">表格列名标准化 — 统一各省职位表格式</div>
     </div>
   </div>
   <div class="header-right">
-    <span class="badge" id="dataBadge">📭 等待上传</span>
-    <button class="theme-toggle" id="themeToggle" title="切换主题" aria-label="切换暗色/亮色主题">🌙</button>
+    <span class="badge" id="dataBadge"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg><span>等待上传</span></span>
+    <button class="theme-toggle" id="themeToggle" title="切换主题" aria-label="切换暗色/亮色主题"></button>
   </div>
 </header>
 
 <!-- Upload -->
 <div class="card upload-zone idle" id="uploadZone" role="button" tabindex="0" aria-label="上传职位表文件">
-  <div class="upload-icon">📂</div>
+  <div class="upload-icon" style="display:flex;justify-content:center;color:var(--primary);margin-bottom:10px">
+    <svg class="icon icon-xl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+  </div>
   <div class="upload-title">拖拽或点击上传职位表</div>
   <div class="upload-hint">支持 .xlsx / .xls / .csv · 自动检测列名并标准化</div>
+  <div class="upload-actions">
+    <button class="btn btn-sm btn-outline" id="btnUploadBrowse" type="button">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      选择文件
+    </button>
+    <span class="divider-or">或</span>
+    <button class="btn btn-sm btn-demo" id="btnDemo" type="button">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+      加载示例数据
+    </button>
+  </div>
   <input type="file" id="fileInput" multiple accept=".xlsx,.xls,.csv">
+</div>
+
+<!-- Demo Banner -->
+<div class="demo-banner" id="demoBanner">
+  <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  <span class="demo-banner-content"><strong>正在浏览示例数据</strong> · 体验完整流程后请点击"选择文件"上传您自己的表格</span>
+  <button class="demo-banner-dismiss" id="demoBannerDismiss" aria-label="关闭示例提示">×</button>
 </div>
 
 <!-- Mapping Review (hidden until upload) -->
 <div class="card" id="mappingCard" style="display:none" role="region" aria-label="列名映射检测">
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px">
     <div>
-      <div style="font-weight:700;font-size:16px">🔍 列名映射检测</div>
+      <div style="font-weight:700;font-size:16px;display:inline-flex;align-items:center;gap:8px">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        列名映射检测
+      </div>
       <div style="font-size:13px;color:var(--muted);margin-top:2px">自动检测每列对应的标准字段，您可手动调整</div>
     </div>
     <div class="toolbar">
-      <button class="btn btn-outline btn-sm" id="btnAutoMap">🪄 自动匹配</button>
-      <button class="btn btn-primary btn-sm" id="btnApply">✅ 应用标准化</button>
+      <button class="btn btn-outline btn-sm" id="btnUndo" title="撤销最近一次操作"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>撤销</button>
+      <button class="btn btn-outline btn-sm" id="btnAutoMap" title="按当前列名重新匹配"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.71 0L2.36 18.7a1.21 1.21 0 0 0 0 1.71l1.28 1.28a1.21 1.21 0 0 0 1.71 0L21.64 5.35a1.21 1.21 0 0 0 0-1.71z"/><path d="M5 3v4M3 5h4M19 17v4M17 19h4"/></svg>自动匹配</button>
+      <button class="btn btn-outline btn-sm" id="btnSkipUnmapped" title="将所有未匹配列标记为跳过"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>跳过未匹配</button>
+      <button class="btn btn-outline btn-sm" id="btnSavePreset" title="保存当前映射方案"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>保存预设</button>
+      <button class="btn btn-outline btn-sm" id="btnLoadPreset" title="加载已保存的映射预设"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-15-6.7L3 13"/></svg>加载预设</button>
+      <button class="btn btn-outline btn-sm" id="btnAddField" title="添加自定义标准字段"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>自定义字段</button>
+      <button class="btn btn-outline btn-sm" id="btnExportRules" title="导出当前映射规则为 JSON"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg>导出规则</button>
+      <button class="btn btn-outline btn-sm" id="btnImportRules" title="从 JSON 导入映射规则"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>导入规则</button>
+      <button class="btn btn-primary btn-sm" id="btnApply"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>应用标准化</button>
     </div>
+  </div>
+  <input type="file" id="rulesFileInput" accept=".json" style="display:none">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px">
+    <div style="position:relative;flex:1;min-width:200px;max-width:320px">
+      <input id="mappingSearch" type="text" placeholder="搜索列名或目标字段…" class="search-input">
+    </div>
+    <div id="mappingStats" class="mapping-stats"></div>
   </div>
   <div class="table-wrap" style="max-height:500px;overflow-y:auto">
     <table class="mapping-table" id="mappingTable">
@@ -208,8 +310,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
       <tbody id="mappingBody"></tbody>
     </table>
   </div>
-  <div style="font-size:12px;color:var(--muted);margin-top:8px">
-    🟢 绿色=高置信 &nbsp; 🟡 黄色=中置信 &nbsp; 🔴 红色=未匹配 &nbsp; 未匹配列默认保留原名
+  <div style="font-size:12px;color:var(--muted);margin-top:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:#16a34a;display:inline-block"></span>高置信</span>
+    <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:#d97706;display:inline-block"></span>中置信</span>
+    <span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:50%;background:#dc2626;display:inline-block"></span>未匹配</span>
+    <span>未匹配列默认跳过，下拉切换映射关系并自动学习</span>
   </div>
 </div>
 
@@ -217,16 +322,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 <div class="card" id="previewCard" style="display:none" role="region" aria-label="标准化预览">
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:12px">
     <div>
-      <div style="font-weight:700;font-size:16px">📋 标准化预览</div>
+      <div style="font-weight:700;font-size:16px;display:inline-flex;align-items:center;gap:8px">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--primary)"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        标准化预览
+      </div>
       <div style="font-size:13px;color:var(--muted)">
         共 <span id="previewCount" style="font-weight:600;color:var(--primary)">0</span> 行数据，
         映射了 <span id="previewColCount" style="font-weight:600;color:var(--primary)">0</span> 个标准字段
       </div>
     </div>
     <div class="toolbar">
-      <button class="btn btn-outline btn-sm" id="btnBack">← 返回调整</button>
-      <button class="btn btn-primary btn-sm" id="btnExport">📥 导出标准 Excel</button>
-      <button class="btn btn-outline btn-sm" id="btnExportCSV">📄 导出 CSV</button>
+      <button class="btn btn-outline btn-sm" id="btnBack"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>返回调整</button>
+      <button class="btn btn-outline btn-sm" id="btnCopyTSV" title="复制标准化结果到剪贴板 (TSV 格式，可粘贴到 Excel)"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>复制数据</button>
+      <button class="btn btn-primary btn-sm" id="btnExport"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出标准 Excel</button>
+      <button class="btn btn-outline btn-sm" id="btnExportCSV"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>导出 CSV</button>
     </div>
   </div>
   <div class="table-wrap" style="max-height:500px;overflow:auto">
@@ -235,8 +344,48 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","PingFang SC"
 </div>
 
 <div class="footer">
-  TableNorm v1.0.0
+  TableNorm v1.1.0 · 完全本地处理，不上传任何数据到服务器 · <a href="#" onclick="event.preventDefault();document.getElementById('helpModal').style.display='flex'" style="color:var(--primary);text-decoration:none">使用帮助</a>
 </div>
+</div>
+
+<!-- Preset Modal -->
+<div class="modal-backdrop" id="presetModal" style="display:none">
+  <div class="modal">
+    <button class="modal-close" data-close-modal aria-label="关闭">×</button>
+    <div id="presetModalBody"></div>
+  </div>
+</div>
+
+<!-- Custom Field Modal -->
+<div class="modal-backdrop" id="customFieldModal" style="display:none">
+  <div class="modal">
+    <button class="modal-close" data-close-modal aria-label="关闭">×</button>
+    <div id="customFieldBody"></div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div class="modal-backdrop" id="helpModal" style="display:none">
+  <div class="modal">
+    <button class="modal-close" data-close-modal aria-label="关闭">×</button>
+    <h3 style="margin-bottom:14px">TableNorm 使用说明</h3>
+    <div style="font-size:14px;line-height:1.8;color:var(--text)">
+      <p><strong>1. 上传</strong>：拖拽或选择 .xlsx / .xls / .csv 文件，支持多个文件批量合并</p>
+      <p><strong>2. 映射</strong>：系统自动检测列名，可下拉手动调整；调过的列会自动学习，下次更准确</p>
+      <p><strong>3. 工具</strong>：
+        <ul style="margin:6px 0 6px 20px">
+          <li><em>撤销</em>：回退到上一次操作前</li>
+          <li><em>跳过未匹配</em>：将置信度低的列一键标记为跳过</li>
+          <li><em>保存/加载预设</em>：将当前映射方案命名保存，下次相同格式一键应用</li>
+          <li><em>导出/导入规则</em>：以 JSON 格式交换完整映射规则（含学习词典）</li>
+          <li><em>自定义字段</em>：添加项目专属的标准字段（如「年终奖金」）</li>
+          <li><em>复制数据</em>：TSV 格式，可直接粘贴到 Excel/在线表格</li>
+        </ul>
+      </p>
+      <p><strong>4. 导出</strong>：标准 Excel（自动识别类型）或 CSV（UTF-8 BOM，Excel 直接打开无乱码）</p>
+      <p style="color:var(--muted);font-size:12px;margin-top:12px">所有处理均在浏览器本地完成，数据不会上传到任何服务器。</p>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -274,9 +423,12 @@ const STATE = {
   raw: [],           // 原始解析数据
   headers: [],       // 原始列名
   sampleData: [],    // 每个列的示例值
-  mappings: [],      // [{ original, target, confidence }]
+  mappings: [],      // [{ original, target, confidence, synonym, manual }]
   normalized: [],    // 标准化后的数据
-  targetMap: {}      // 原始列名→标准字段名 的最终映射
+  targetMap: {},     // 原始列名→标准字段名 的最终映射
+  isDemo: false,
+  learnedMap: {},    // 历史学习: { normalizedHeader: { target, synonyms: [] } }
+  currentPreset: null
 };
 
 // ═══════════════════════════════════════════════
@@ -323,54 +475,91 @@ const SYNONYM_DICT = {
     '职位属性', '职位类别', '岗位属性', '考试类别', '职位性质',
     '招录属性', '岗位类别', '职位种类', '招考类别'
   ],
-  examType: [
+examType: [
     '考试类别', '考试类型', '试卷类别', '笔试试卷类别', '公共科目笔试类别',
-    '笔试类别', '试卷类型'
+    '笔试类别', '试卷类型', '考试科目', '公共科目'
   ],
   count: [
     '招考人数', '招录人数', '计划招录', '招录计划', '招录', '招聘人数',
     '招录名额', '录取人数', '计划人数', '招聘数量', '人数', '招录数',
-    '招考数量', '录用人数', '拟招录人数'
+    '招考数量', '录用人数', '拟招录人数', '拟招考人数', '名额', '计划数'
   ],
   major: [
     '专业', '专业要求', '学科', '所学专业', '专业名称', '报考专业',
-    '学科门类', '专业类别', '学科专业', '专业条件'
+    '学科门类', '专业类别', '学科专业', '专业条件', '专业及代码',
+    '专业要求学历', '专业(类)', '专业类'
   ],
   education: [
     '学历', '学历要求', '文化程度', '学历条件', '学历学位',
-    '最低学历', '学历层次', '教育程度'
+    '最低学历', '学历层次', '教育程度', '学历要求层次', '学历(学位)',
+    '学历及学位', '文化程度要求'
   ],
   degree: [
-    '学位', '学位要求', '学位条件', '学历学位', '学位层次'
+    '学位', '学位要求', '学位条件', '学位层次', '所获学位', '授予学位'
   ],
   party: [
     '政治面貌', '政治面貌要求', '党派要求', '政治条件', '党员要求',
-    '政治身份', '面貌'
+    '政治身份', '面貌', '中共党员', '党员身份'
   ],
   experience: [
     '基层工作最低年限', '基层经验', '基层工作年限', '工作年限',
     '基层工作经历', '基层服务年限', '工作经验', '基层工作最低年限要求',
-    '服务基层项目工作经历', '基层经历'
+    '服务基层项目工作经历', '基层经历', '最低工作年限', '工作经历',
+    '服务期', '服务年限', '基层工作经历年限'
   ],
   otherReq: [
     '其他条件', '其他要求', '其他资格条件', '其他报考条件',
-    '附加条件', '其他', '其他限制条件', '其他资格要求'
+    '附加条件', '其他', '其他限制条件', '其他资格要求', '其他要求项',
+    '备注要求'
   ],
   province: [
     '地区', '省份', '所属地区', '所在省份', '工作所在地', '省',
-    '所属省份', '所在省'
+    '所属省份', '所在省', '省(市)', '省市', '所属省', '地区代码'
   ],
   location: [
     '工作地点', '工作地址', '地点', '所在地', '具体工作地点',
-    '落户地点', '工作所在地', '工作地区', '办公地点'
+    '落户地点', '工作所在地', '工作地区', '办公地点', '岗位所在地'
   ],
   interviewRatio: [
     '面试比例', '面试人员比例', '面试人选比例', '面试入围比例',
-    '进面比例', '面试人数比例'
+    '进面比例', '面试人数比例', '面试比例', '面试入围人数比例'
   ],
   notes: [
     '备注', '备注信息', '说明', '其他说明', '补充说明',
-    '附注', '注意事项'
+    '附注', '注意事项', '备注栏', '其他备注'
+  ]
+};
+
+// ═══════════════════════════════════════════════
+//  DEMO DATA — 多省不同列名风格示例
+// ═══════════════════════════════════════════════
+const DEMO_DATA = {
+  '广东省2024公务员职位表': [
+    ['部门名称', '职位名称', '机构层级', '职位属性', '考试类别', '招考人数', '专业要求', '学历要求', '学位要求', '政治面貌', '基层工作最低年限', '其他条件', '省份', '工作地点', '面试比例', '备注'],
+    ['广东省财政厅', '财务管理科员', '省级', '综合管理类', '申论+行测', '3', '财务管理、会计学、审计学', '本科及以上', '学士及以上', '不限', '2年', '具有注册会计师资格', '广东省', '广州市', '1:3', '需经常出差'],
+    ['深圳市市场监督管理局', '市场监管科员', '市级', '行政执法类', '申论+行测', '5', '法学、市场营销', '本科及以上', '学士及以上', '中共党员', '无限制', '无', '广东省', '深圳市', '1:5', '适合男性'],
+    ['广州市公安局', '网络安全员', '市级', '行政执法类', '申论+行测+专业课', '2', '计算机科学与技术、信息安全', '研究生及以上', '硕士及以上', '不限', '无限制', '需值夜班', '广东省', '广州市', '1:4', ''],
+    ['广东省教育厅', '教育管理科员', '省级', '综合管理类', '申论+行测', '4', '教育学、教育管理', '本科及以上', '学士及以上', '不限', '3年', '无', '广东省', '广州市', '1:3', ''],
+    ['佛山市税务局', '税收征管员', '市级', '行政执法类', '申论+行测', '8', '税务、会计、审计', '本科及以上', '学士及以上', '不限', '2年', '需驻点工作', '广东省', '佛山市', '1:4', ''],
+    ['东莞市人社局', '人事管理科员', '市级', '综合管理类', '申论+行测', '2', '人力资源管理、社会学', '本科及以上', '不限', '不限', '无限制', '无', '广东省', '东莞市', '1:3', '']
+  ],
+  '江苏省2024省考职位表': [
+    ['招录机关', '招考职位', '单位层级', '岗位属性', '试卷类别', '招录人数', '专业', '学历', '学位', '政治面貌要求', '基层工作经历', '其他资格条件', '地区', '工作地址', '面试人员比例', '备注信息'],
+    ['江苏省发改委', '发展规划处科员', '省直', '综合管理', 'A类', '2', '经济学、金融学', '研究生', '硕士', '不限', '3年', '英语六级', '江苏省', '南京', '1:3', ''],
+    ['南京市建委', '城市建设管理员', '市级', '专业技术', 'B类', '3', '土木工程、建筑学', '本科', '学士', '中共党员', '2年', '需现场作业', '江苏省', '南京', '1:5', '限男性'],
+    ['苏州市招商局', '招商引资科员', '市级', '综合管理', 'A类', '4', '国际经济与贸易、工商管理', '本科', '学士', '不限', '无限制', '英语口语良好', '江苏省', '苏州', '1:3', ''],
+    ['江苏省公安厅', '网络安全岗', '省直', '专业技术', 'C类', '1', '网络安全、计算机', '本科', '学士', '不限', '无限制', '持网络安全等级证书', '江苏省', '南京', '1:4', ''],
+    ['无锡市生态环境局', '环境监察员', '市级', '行政执法', 'B类', '5', '环境工程、化学', '本科', '学士', '不限', '2年', '需外勤', '江苏省', '无锡', '1:4', ''],
+    ['江苏省卫健委', '公共卫生管理', '省直', '综合管理', 'A类', '2', '公共卫生、预防医学', '研究生', '硕士', '不限', '3年', '医师资格证', '江苏省', '南京', '1:3', '']
+  ],
+  '北京市2024公务员职位表': [
+    ['招录单位', '岗位名称', '机构性质', '职位类别', '公共科目笔试类别', '招聘人数', '所学专业', '文化程度', '学位条件', '政治条件', '基层工作年限', '附加条件', '所属地区', '具体工作地点', '进面比例', '附注'],
+    ['北京市规划和自然资源委员会', '规划管理员', '行政机关', '综合岗', '地市级', '3', '城市规划、地理信息', '大学本科', '学士', '不限', '2年', '有测绘资质优先', '北京市', '海淀区', '1:3', ''],
+    ['北京市海淀区税务局', '税务专员', '行政机关', '执法岗', '区县级', '6', '财经类、法学类', '大学本科', '学士', '中共党员优先', '无限制', '有驾照', '北京市', '海淀区', '1:4', ''],
+    ['北京市民政局', '社会救助管理员', '行政机关', '综合岗', '地市级', '2', '社会工作、公共管理', '大学本科', '学士', '不限', '3年', '社会工作师证', '北京市', '东城区', '1:3', ''],
+    ['北京市朝阳区市场监管局', '市场监督员', '行政机关', '执法岗', '区县级', '8', '法学、食品科学', '大学专科', '不限', '不限', '无限制', '需值夜班', '北京市', '朝阳区', '1:5', '适合男性'],
+    ['北京市公安局', '网络安全员', '行政机关', '技术岗', '地市级', '1', '信息安全、计算机', '研究生', '硕士', '不限', '无限制', '网络安全等级证书', '北京市', '西城区', '1:3', ''],
+    ['北京市教委', '教育政策研究员', '行政机关', '综合岗', '地市级', '2', '教育学、行政管理', '研究生', '硕士', '不限', '2年', '有教学经验优先', '北京市', '西城区', '1:3', '']
   ]
 };
 
@@ -378,6 +567,8 @@ const SYNONYM_DICT = {
 //  MATCHING ENGINE
 // ═══════════════════════════════════════════════
 function jaccardSimilarity(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return 0;
+  if (!a.length || !b.length) return 0;
   // 字符级 Jaccard 相似度
   let sa = new Set(a.split(''));
   let sb = new Set(b.split(''));
@@ -388,33 +579,58 @@ function jaccardSimilarity(a, b) {
 }
 
 function longestCommonSubstring(a, b) {
+  if (!a || !b || !a.length || !b.length) return 0;
   let maxLen = 0;
-  for (let i = 0; i < a.length; i++) {
-    for (let j = 0; j < b.length; j++) {
-      let k = 0;
-      while (i + k < a.length && j + k < b.length && a[i + k] === b[j + k]) k++;
-      if (k > maxLen) maxLen = k;
+  let aLen = a.length, bLen = b.length;
+  let prev = new Array(bLen + 1).fill(0);
+  let curr = new Array(bLen + 1).fill(0);
+  for (let i = 1; i <= aLen; i++) {
+    for (let j = 1; j <= bLen; j++) {
+      curr[j] = a[i - 1] === b[j - 1] ? prev[j - 1] + 1 : 0;
+      if (curr[j] > maxLen) maxLen = curr[j];
     }
+    let tmp = prev; prev = curr; curr = tmp; curr.fill(0);
   }
-  return maxLen / Math.max(a.length, b.length);
+  return maxLen / Math.max(aLen, bLen);
 }
 
-function scoreMatch(original, synonyms) {
+function normalizeText(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/[\s（）()【】\[\]·•、，,。.:：\/\\\-_—]/g, '')
+    .toLowerCase();
+}
+
+function scoreMatch(original, synonyms, learnedSynonyms) {
   // 对每个同义词计算匹配得分，返回最佳得分和匹配词
   let best = { score: 0, synonym: '' };
-  let orig = original.replace(/\s+/g, ''); // 去空格
-  synonyms.forEach(function(syn) {
-    let s = syn.replace(/\s+/g, '');
+  let orig = normalizeText(original);
+  if (!orig) return best;
+
+  let allSynonyms = synonyms.slice();
+  if (learnedSynonyms && learnedSynonyms.length) {
+    allSynonyms = allSynonyms.concat(learnedSynonyms);
+  }
+
+  allSynonyms.forEach(function(syn) {
+    let s = normalizeText(syn);
+    if (!s) return;
     let score = 0;
     // 1. 精确匹配 → 1.0
     if (orig === s) { score = 1.0; }
-    // 2. 包含匹配 → 0.9
-    else if (orig.indexOf(s) !== -1 || s.indexOf(orig) !== -1) { score = 0.9; }
+    // 2. 包含匹配 → 0.9 (但长度过短时降权)
+    else if (orig.indexOf(s) !== -1 || s.indexOf(orig) !== -1) {
+      let minLen = Math.min(orig.length, s.length);
+      score = minLen >= 2 ? 0.9 : 0.4;
+    }
     // 3. 高 Jaccard + 公共子串
     else {
       let j = jaccardSimilarity(orig, s);
       let l = longestCommonSubstring(orig, s);
-      score = j * 0.6 + l * 0.4;
+      let baseScore = j * 0.6 + l * 0.4;
+      let minLen = Math.min(orig.length, s.length);
+      // 当短串长度<2时大幅降权（避免单字误匹配）
+      score = baseScore * (minLen >= 2 ? 1 : 0.25);
     }
     if (score > best.score) { best = { score: score, synonym: syn }; }
   });
@@ -422,15 +638,52 @@ function scoreMatch(original, synonyms) {
 }
 
 function detectColumn(header) {
+  // 优先使用历史学习映射
+  let norm = normalizeText(header);
+  if (norm && STATE.learnedMap && STATE.learnedMap[norm]) {
+    let learned = STATE.learnedMap[norm];
+    return { score: 1.0, target: learned.target, synonym: learned.originalSynonym || header, learned: true };
+  }
   // 对原始列名，在所有标准字段的同义词中找最佳匹配
   let bestOverall = { score: 0, target: '', synonym: '' };
   Object.keys(SYNONYM_DICT).forEach(function(targetKey) {
-    let result = scoreMatch(header, SYNONYM_DICT[targetKey]);
+    let learnedSyns = (STATE.learnedMap && STATE.learnedMap[norm] && STATE.learnedMap[norm].extraSynonyms) || [];
+    let result = scoreMatch(header, SYNONYM_DICT[targetKey], learnedSyns);
     if (result.score > bestOverall.score) {
       bestOverall = { score: result.score, target: targetKey, synonym: result.synonym };
     }
   });
   return bestOverall;
+}
+
+function recordLearning(original, target, synonym) {
+  let norm = normalizeText(original);
+  if (!norm || !target) return;
+  if (!STATE.learnedMap[norm]) {
+    STATE.learnedMap[norm] = { target: target, originalSynonym: synonym || original, count: 0, extraSynonyms: [] };
+  }
+  STATE.learnedMap[norm].target = target;
+  STATE.learnedMap[norm].count = (STATE.learnedMap[norm].count || 0) + 1;
+  if (synonym && STATE.learnedMap[norm].extraSynonyms.indexOf(synonym) === -1) {
+    STATE.learnedMap[norm].extraSynonyms.push(synonym);
+    if (STATE.learnedMap[norm].extraSynonyms.length > 20) {
+      STATE.learnedMap[norm].extraSynonyms = STATE.learnedMap[norm].extraSynonyms.slice(-20);
+    }
+  }
+  persistLearned();
+}
+
+function persistLearned() {
+  try {
+    localStorage.setItem('gwy_tablenorm_learned', JSON.stringify(STATE.learnedMap));
+  } catch(e) { /* localStorage可能满 */ }
+}
+
+function loadLearned() {
+  try {
+    let raw = localStorage.getItem('gwy_tablenorm_learned');
+    if (raw) STATE.learnedMap = JSON.parse(raw) || {};
+  } catch(e) { STATE.learnedMap = {}; }
 }
 
 function getConfidenceLabel(score) {
@@ -446,9 +699,28 @@ function getRowClass(score) {
 }
 
 // ═══════════════════════════════════════════════
+//  ICONS (Lucide-style inline SVG)
+// ═══════════════════════════════════════════════
+const ICONS = {
+  sun:        '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>',
+  moon:       '<svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+  check:      '<svg class="icon" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+  circleCheck:'<svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+  download:   '<svg class="icon" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+  fileText:   '<svg class="icon" viewBox="0 0 24 24"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>',
+  alertTri:   '<svg class="icon" viewBox="0 0 24 24"><path d="m10.29 3.86 1.66 2.62a2 2 0 0 0 1.73 1h3.5a2 2 0 0 1 1.73 3l-1.66 2.62a2 2 0 0 1-1.73 1H12.5a2 2 0 0 0-1.73 1l-1.66 2.62a2 2 0 0 1-3.46 0L4.18 12.5a2 2 0 0 1 0-2l1.66-2.62a2 2 0 0 1 1.73-1H12a2 2 0 0 0 1.73-1z"/><circle cx="12" cy="12" r="1"/></svg>',
+  xCircle:    '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+  paperclip:  '<svg class="icon" viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>'
+};
+
+// ═══════════════════════════════════════════════
 //  UTILITIES
 // ═══════════════════════════════════════════════
+const STANDARD_KEYS = STANDARD_FIELDS.map(function(f) { return f.key; });
+const FIELD_BY_KEY  = Object.fromEntries(STANDARD_FIELDS.map(function(f) { return [f.key, f]; }));
+
 function formatNum(n) { return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+
 function esc(s) {
   let d = document.createElement('div');
   d.appendChild(document.createTextNode(String(s)));
@@ -456,24 +728,38 @@ function esc(s) {
 }
 
 function toast(msg, type) {
+  let iconKey = type === 'success' ? 'circleCheck' : type === 'error' ? 'xCircle' : type === 'warn' ? 'alertTri' : '';
+  let html = '';
+  if (iconKey && ICONS[iconKey]) html += ICONS[iconKey];
+  html += '<span>' + esc(msg) + '</span>';
   let el = document.createElement('div');
-  el.setAttribute('role','status');el.className = 'toast' + (type ? ' ' + type : '');
-  el.textContent = msg;
+  el.setAttribute('role', 'status');
+  el.className = 'toast' + (type ? ' ' + type : '');
+  el.innerHTML = html;
   document.body.appendChild(el);
   setTimeout(function() {
     el.classList.add('out');
     setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
-  }, 2000);
+  }, 2200);
 }
 
 // ── Theme ──
+function setThemeIcon() {
+  let btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  let isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  btn.innerHTML = isDark ? ICONS.sun : ICONS.moon;
+}
+
 function toggleTheme() {
-  let cur = document.documentElement.getAttribute('data-theme');
-  let next = cur === 'dark' ? '' : 'dark';
+  let next = document.documentElement.getAttribute('data-theme') === 'dark' ? '' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  document.getElementById('themeToggle').textContent = next ? '☀️' : '🌙';
-  try { let s = JSON.parse(localStorage.getItem('gwy_tablenorm_settings') || localStorage.getItem('tablenorm_settings') || '{}'); s.theme = next; localStorage.setItem('gwy_tablenorm_settings', JSON.stringify(s)); }
-  catch(e) {}
+  setThemeIcon();
+  try {
+    let s = JSON.parse(localStorage.getItem('gwy_tablenorm_settings') || '{}');
+    s.theme = next;
+    localStorage.setItem('gwy_tablenorm_settings', JSON.stringify(s));
+  } catch(e) {}
 }
 
 // ═══════════════════════════════════════════════
@@ -481,31 +767,73 @@ function toggleTheme() {
 // ═══════════════════════════════════════════════
 function handleFiles(files) {
   if (!files || !files.length) return;
-  if (typeof XLSX === 'undefined') { toast('⚠️ 组件加载中，请稍后重试', 'warn'); return; }
+  if (typeof XLSX === 'undefined') { toast('组件加载中，请稍后重试', 'warn'); return; }
 
   let validFiles = [];
   Array.from(files).forEach(function(f) {
-    if (f.size > 30 * 1024 * 1024) { toast('⚠️ 文件 ' + f.name + ' 超过30MB，已跳过', 'warn'); return; }
+    if (f.size > 30 * 1024 * 1024) { toast('文件 ' + f.name + ' 超过30MB，已跳过', 'warn'); return; }
     validFiles.push(f);
   });
   if (!validFiles.length) return;
 
   let allRows = [];
   let loaded = 0;
+  let totalSize = validFiles.reduce(function(s, f) { return s + f.size; }, 0);
+  let readSize = 0;
+
+  showProgress(0, '正在读取文件 0/' + validFiles.length);
+
   validFiles.forEach(function(file) {
     let reader = new FileReader();
+    reader.onprogress = function(e) {
+      if (e.lengthComputable) {
+        let pct = ((readSize + e.loaded) / totalSize) * 90; // 读取占90%
+        showProgress(pct, '正在读取: ' + file.name);
+      }
+    };
     reader.onload = function(e) {
       try {
         let result = parseFile(e.target.result, file.name);
         allRows = allRows.concat(result);
+        showProgress(90 + ((loaded + 1) / validFiles.length) * 10, '解析: ' + file.name);
       } catch(err) {
         console.error(file.name + ': 解析失败', err);
+        toast('文件 ' + file.name + ' 解析失败: ' + err.message, 'error');
       }
+      readSize += file.size;
       loaded++;
-      if (loaded === validFiles.length) finishUpload(allRows, file.name);
+      if (loaded === validFiles.length) {
+        setTimeout(function() {
+          hideProgress();
+          finishUpload(allRows, file.name, false);
+        }, 200);
+      }
+    };
+    reader.onerror = function() {
+      loaded++;
+      toast('文件 ' + file.name + ' 读取失败', 'error');
+      if (loaded === validFiles.length) {
+        hideProgress();
+        if (allRows.length) finishUpload(allRows, file.name, false);
+      }
     };
     reader.readAsArrayBuffer(file);
   });
+}
+
+// ── Demo ──
+function loadDemo() {
+  let keys = Object.keys(DEMO_DATA);
+  let chosen = keys[Math.floor(Math.random() * keys.length)];
+  let rows = DEMO_DATA[chosen];
+  let headers = rows[0];
+  let objs = rows.slice(1).map(function(arr) {
+    let o = {};
+    headers.forEach(function(h, i) { o[h] = arr[i] !== undefined ? String(arr[i]) : ''; });
+    return o;
+  });
+  document.getElementById('demoBanner').classList.add('show');
+  finishUpload(objs, chosen, true);
 }
 
 function parseFile(data, fileName) {
@@ -514,27 +842,16 @@ function parseFile(data, fileName) {
   // CSV handling
   if (ext === 'csv') {
     let arr = new Uint8Array(data);
-    let raw = '';
-    for (let i = 0; i < arr.length; i++) raw += String.fromCharCode(arr[i]);
-    // Try UTF-8 first, then GBK
-    let text;
-    try { text = decodeURIComponent(escape(raw)); } catch(e) { text = raw; }
-    // GBK fallback: check for garbled characters
-    if (/[ï¿½]/.test(text) || /[\x80-\xff]{3,}/.test(text)) {
-      try {
-        let decoder = new TextDecoder('gbk');
-        text = decoder.decode(arr);
-      } catch(e) {}
-    }
-    // Simple CSV parse (handle quoted fields)
-    let lines = text.split(/\r?\n/).filter(function(l) { return l.trim(); });
-    if (!lines.length) return [];
-    let headers = parseCSVLine(lines[0]);
+    let text = decodeCSVText(arr);
+    if (!text) return [];
+    let allRows = parseCSVText(text);
+    if (!allRows.length) return [];
+    let headers = allRows[0].map(function(h) { return String(h).replace(/^\uFEFF/, ''); });
     let rows = [];
-    for (let r = 1; r < lines.length; r++) {
-      let vals = parseCSVLine(lines[r]);
+    for (let r = 1; r < allRows.length; r++) {
+      let vals = allRows[r];
       let obj = {};
-      for (let c = 0; c < headers.length; c++) obj[headers[c]] = (vals[c] || '');
+      for (let c = 0; c < headers.length; c++) obj[headers[c]] = (vals[c] !== undefined ? String(vals[c]) : '');
       rows.push(obj);
     }
     return rows;
@@ -544,7 +861,7 @@ function parseFile(data, fileName) {
   let wb = XLSX.read(data, { type: 'array' });
   let results = [];
   wb.SheetNames.forEach(function(sn) {
-    if (/^(说明|汇总|统计|目录|Sheet)/i.test(sn)) return;
+    if (/^(说明|汇总|统计|目录)/i.test(sn)) return;
     let ws = wb.Sheets[sn];
     if (!ws) return;
     let rows = XLSX.utils.sheet_to_json(ws, { defval: '' });
@@ -552,7 +869,7 @@ function parseFile(data, fileName) {
 
     // Check if headers are on row 1 (common in Chinese spreadsheets with merged title rows)
     let headers = Object.keys(rows[0]);
-    let testKws = ['部门', '职位', '专业', '学历', '地点', '省份', '招考', '招录', '单位'];
+    let testKws = ['部门', '职位', '专业', '学历', '地点', '省份', '招考', '招录', '单位', '岗位'];
     let matchCount = 0;
     testKws.forEach(function(kw) {
       for (let i = 0; i < headers.length; i++) { if (headers[i].indexOf(kw) !== -1) { matchCount++; break; } }
@@ -560,12 +877,15 @@ function parseFile(data, fileName) {
     if (matchCount < 2) {
       // Headers might be on row 2 — retry
       let rawRows = XLSX.utils.sheet_to_json(ws, { defval: '', header: 1 });
-      if (rawRows.length >= 2) {
-        let newHeaders = rawRows[1];
+      if (rawRows.length >= 2 && rawRows[1] && rawRows[1].length) {
+        let newHeaders = rawRows[1].map(function(h) { return String(h || ''); });
         rows = [];
         for (let r = 2; r < rawRows.length; r++) {
+          let row = rawRows[r] || [];
+          // 跳过完全空白的行
+          if (!row.some(function(c) { return c !== '' && c !== null && c !== undefined; })) continue;
           let obj = {};
-          for (let c = 0; c < newHeaders.length; c++) obj[String(newHeaders[c] || '')] = rawRows[r][c] !== undefined ? rawRows[r][c] : '';
+          for (let c = 0; c < newHeaders.length; c++) obj[newHeaders[c]] = row[c] !== undefined ? String(row[c]) : '';
           rows.push(obj);
         }
         console.warn(sn + ': 自动跳过说明行，使用第二行作为表头');
@@ -576,14 +896,39 @@ function parseFile(data, fileName) {
   return results;
 }
 
+function decodeCSVText(arr) {
+  // 优先尝试 UTF-8（含 BOM），失败则回退 GB18030（兼容 GBK）
+  // 检查 UTF-8 BOM (EF BB BF)
+  let hasBOM = arr.length >= 3 && arr[0] === 0xEF && arr[1] === 0xBB && arr[2] === 0xBF;
+  try {
+    let decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: !hasBOM });
+    let text = decoder.decode(arr);
+    return text.replace(/^\uFEFF/, '');
+  } catch(e) { /* 非合法 UTF-8 */ }
+  try {
+    let decoder = new TextDecoder('gb18030');
+    return decoder.decode(arr);
+  } catch(e) {}
+  // 旧浏览器兜底
+  let raw = '';
+  for (let i = 0; i < arr.length; i++) raw += String.fromCharCode(arr[i]);
+  return raw.replace(/^\uFEFF/, '');
+}
+
 function parseCSVLine(line) {
+  // 正确处理：双引号内 "" 表示一个 ", 字段内可包含逗号
   let result = [];
   let current = '';
   let inQuotes = false;
   for (let i = 0; i < line.length; i++) {
     let ch = line[i];
     if (ch === '"') {
-      inQuotes = !inQuotes;
+      if (inQuotes && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
     } else if (ch === ',' && !inQuotes) {
       result.push(current.trim());
       current = '';
@@ -595,15 +940,53 @@ function parseCSVLine(line) {
   return result;
 }
 
+function parseCSVText(text) {
+  // 完整解析 CSV（支持带引号字段内的换行）
+  let rows = [];
+  let current = '';
+  let row = [];
+  let inQuotes = false;
+  for (let i = 0; i < text.length; i++) {
+    let ch = text[i];
+    if (ch === '"') {
+      if (inQuotes && text[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (ch === ',' && !inQuotes) {
+      row.push(current.trim());
+      current = '';
+    } else if ((ch === '\n' || ch === '\r') && !inQuotes) {
+      if (ch === '\r' && text[i + 1] === '\n') i++;
+      row.push(current.trim());
+      if (row.some(function(v) { return v.length > 0; })) rows.push(row);
+      row = [];
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+  if (current.length || row.length) {
+    row.push(current.trim());
+    if (row.some(function(v) { return v.length > 0; })) rows.push(row);
+  }
+  return rows;
+}
+
 // ═══════════════════════════════════════════════
 //  CORE: DETECT & RENDER MAPPING
 // ═══════════════════════════════════════════════
-function finishUpload(allRows, fileName) {
-  if (!allRows.length) { toast('⚠️ 未能解析有效数据', 'warn'); return; }
+function finishUpload(allRows, fileName, isDemo) {
+  if (!allRows.length) { toast('未能解析有效数据', 'warn'); return; }
 
   STATE.raw = allRows;
+  STATE.isDemo = !!isDemo;
+  STATE.fileName = fileName;
+  STATE.undoStack = [];
+  STATE.mappingFilter = '';
 
-  // Extract headers and sample data
   STATE.headers = Object.keys(allRows[0]);
   STATE.sampleData = [];
   let sampleSize = Math.min(3, allRows.length);
@@ -616,79 +999,146 @@ function finishUpload(allRows, fileName) {
     STATE.sampleData.push(samples.join(' | ') || '(空)');
   });
 
-  // Detect mappings
   STATE.mappings = STATE.headers.map(function(h) {
     let result = detectColumn(h);
-    return { original: h, target: result.target, confidence: result.score, synonym: result.synonym };
+    return { original: h, target: result.target, confidence: result.score, synonym: result.synonym, manual: false };
   });
 
-  // Update UI
-  document.getElementById('dataBadge').textContent = '📎 ' + formatNum(allRows.length) + ' 行 · ' + STATE.headers.length + ' 列';
+  let badge = document.getElementById('dataBadge');
+  badge.innerHTML = ICONS.paperclip + '<span>' + formatNum(allRows.length) + ' 行 · ' + STATE.headers.length + ' 列</span>';
   document.getElementById('uploadZone').classList.remove('idle');
   document.getElementById('mappingCard').style.display = '';
   document.getElementById('previewCard').style.display = 'none';
   renderMapping();
-  toast('✅ 成功解析 ' + formatNum(allRows.length) + ' 行数据，请确认列名映射', 'success');
+  toast('成功解析 ' + formatNum(allRows.length) + ' 行数据，请确认列名映射', 'success');
 }
 
 function renderMapping() {
-  let html = '';
-  STATE.mappings.forEach(function(m, i) {
+  let fieldKeys = STANDARD_KEYS;
+  let filterKw = (STATE.mappingFilter || '').trim().toLowerCase();
+
+  let rows = STATE.mappings.map(function(m, i) {
     let conf = getConfidenceLabel(m.confidence);
     let rowCls = getRowClass(m.confidence);
-    html += '<tr class="' + rowCls + '">';
-    html += '<td><strong>' + esc(m.original) + '</strong></td>';
-    html += '<td><select data-idx="' + i + '" class="target-select">';
-    html += '<option value="">-- 跳过 / 未知 --</option>';
-    let fieldKeys = Object.keys(SYNONYM_DICT);
+    let badgeText = m.manual ? '手动 · 100%' : (conf.text + ' · ' + Math.round(m.confidence * 100) + '%');
+    let badgeCls  = m.manual ? 'conf-high' : conf.cls;
+
+    let opts = '<option value="">-- 跳过 / 未知 --</option>';
     fieldKeys.forEach(function(sk) {
-      let fi = STANDARD_FIELDS.find(function(f) { return f.key === sk; });
-      let label = fi ? fi.label : sk;
-      let sel = m.target === sk ? ' selected' : '';
-      html += '<option value="' + sk + '"' + sel + '>' + label + '</option>';
+      opts += '<option value="' + sk + '"' + (m.target === sk ? ' selected' : '') + '>' + esc(FIELD_BY_KEY[sk].label) + '</option>';
     });
-    // Also add the raw "keep original" option
-    if (fieldKeys.indexOf(m.target) === -1 && m.target) {
-      html += '<option value="' + esc(m.target) + '" selected>自定义: ' + esc(m.target) + '</option>';
-    }
-    html += '</select></td>';
-    html += '<td><span class="conf-badge ' + conf.cls + '">' + conf.text + ' · ' + Math.round(m.confidence * 100) + '%</span></td>';
-    html += '<td style="font-size:12px;color:let(--muted)">' + esc(STATE.sampleData[i]) + '</td>';
-    html += '</tr>';
+
+    let hideByFilter = filterKw && (m.original.toLowerCase().indexOf(filterKw) === -1) &&
+                       ((FIELD_BY_KEY[m.target] && FIELD_BY_KEY[m.target].label.toLowerCase().indexOf(filterKw) === -1) || !m.target);
+
+    return (
+      '<tr class="' + rowCls + '" data-orig="' + esc(m.original) + '"' + (hideByFilter ? ' style="display:none"' : '') + '>' +
+        '<td><strong>' + esc(m.original) + '</strong></td>' +
+        '<td><select data-idx="' + i + '" class="target-select">' + opts + '</select></td>' +
+        '<td><span class="conf-badge ' + badgeCls + '">' + esc(badgeText) + '</span></td>' +
+        '<td class="sample-cell">' + esc(STATE.sampleData[i]) + '</td>' +
+      '</tr>'
+    );
+  }).join('');
+
+  document.getElementById('mappingBody').innerHTML = rows;
+
+  let visible = document.querySelectorAll('#mappingBody tr:not([style*="display:none"])');
+  visible.forEach(function(tr, i) {
+    let delay = Math.min(i * 0.03, 0.6);
+    tr.style.animation = 'rowReveal 0.3s ease ' + delay + 's both';
   });
-  document.getElementById('mappingBody').innerHTML = html;
-  // Stagger animation for detected rows
-  document.querySelectorAll('#mappingBody tr').forEach(function(tr, i) {
-    tr.style.animation = 'rowReveal 0.35s ease ' + (i * 0.06) + 's both';
+
+  // 手动修改下拉框时：更新行外观 + 同步 STATE.mappings + 学习历史
+  document.querySelectorAll('.target-select').forEach(function(sel) {
+    sel.addEventListener('change', function() {
+      let idx = parseInt(sel.getAttribute('data-idx'), 10);
+      let tr = sel.closest('tr');
+      let badge = tr ? tr.querySelector('.conf-badge') : null;
+      if (sel.value === '') {
+        if (tr) tr.className = 'row-unmapped';
+        if (badge) { badge.className = 'conf-badge conf-low'; badge.textContent = '未匹配 · 0%'; }
+        STATE.mappings[idx].manual = false;
+        STATE.mappings[idx].confidence = 0;
+      } else {
+        if (tr) tr.className = 'row-mapped';
+        if (badge) { badge.className = 'conf-badge conf-high'; badge.textContent = '手动 · 100%'; }
+        STATE.mappings[idx].manual = true;
+        STATE.mappings[idx].confidence = 1.0;
+        recordLearning(STATE.mappings[idx].original, sel.value, STATE.mappings[idx].synonym || STATE.mappings[idx].original);
+      }
+      STATE.mappings[idx].target = sel.value;
+      updateMappingStats();
+    });
   });
+
+  updateMappingStats();
+}
+
+function updateMappingStats() {
+  let total = STATE.mappings.length;
+  let high = 0, mid = 0, low = 0, manual = 0;
+  STATE.mappings.forEach(function(m) {
+    if (m.manual) { manual++; return; }
+    if (m.confidence >= 0.9) high++;
+    else if (m.confidence >= 0.5) mid++;
+    else low++;
+  });
+  let el = document.getElementById('mappingStats');
+  if (el) {
+    el.innerHTML = '<span class="ms-pill ms-pill--total">总计 ' + total + ' 列</span>' +
+                   '<span class="ms-pill ms-pill--high">高置信 ' + high + '</span>' +
+                   '<span class="ms-pill ms-pill--mid">中置信 ' + mid + '</span>' +
+                   '<span class="ms-pill ms-pill--low">未匹配 ' + low + '</span>' +
+                   '<span class="ms-pill ms-pill--manual">手动 ' + manual + '</span>';
+  }
 }
 
 // ═══════════════════════════════════════════════
 //  APPLY MAPPING: NORMALIZE
 // ═══════════════════════════════════════════════
+function getActiveKeys() {
+  let mappedKeys = Object.values(STATE.targetMap);
+  // 返回所有已映射的标准字段（按 STANDARD_KEYS 顺序）；不再因前10行无数据而隐藏列
+  return STANDARD_KEYS.filter(function(k) { return mappedKeys.indexOf(k) !== -1; });
+}
+
 function applyNormalization() {
-  // Read current mapping from selects
   let targetMap = {};
-  let selects = document.querySelectorAll('.target-select');
-  selects.forEach(function(sel) {
-    let idx = parseInt(sel.getAttribute('data-idx'));
+  let targetSources = {};
+  document.querySelectorAll('.target-select').forEach(function(sel) {
+    let idx = parseInt(sel.getAttribute('data-idx'), 10);
     let target = sel.value;
-    if (target) {
-      targetMap[STATE.mappings[idx].original] = target;
+    if (!target) return;
+    let origCol = STATE.mappings[idx].original;
+    targetMap[origCol] = target;
+    if (!targetSources[target]) targetSources[target] = [];
+    targetSources[target].push(origCol);
+  });
+
+  // 检测重复映射到同一标准字段的情况，避免静默覆盖
+  let dups = Object.keys(targetSources).filter(function(k) { return targetSources[k].length > 1; });
+  if (dups.length) {
+    toast('重复映射: ' + dups.map(function(k) {
+      let label = FIELD_BY_KEY[k] ? FIELD_BY_KEY[k].label : k;
+      return label + '(' + targetSources[k].join('、') + ')';
+    }).join('; ') + ' · 后者将覆盖前者', 'warn');
+  }
+
+  // 学习所有手动/有效映射
+  STATE.mappings.forEach(function(m) {
+    if (m.target && (m.manual || m.confidence >= 0.5)) {
+      recordLearning(m.original, m.target, m.synonym || m.original);
     }
   });
+
   STATE.targetMap = targetMap;
 
-  // Build normalized data
-  let standardKeys = STANDARD_FIELDS.map(function(f) { return f.key; });
   STATE.normalized = STATE.raw.map(function(row) {
     let obj = {};
-    // Initialize all standard fields
-    standardKeys.forEach(function(k) { obj[k] = ''; });
-    // Map
+    STANDARD_KEYS.forEach(function(k) { obj[k] = ''; });
     Object.keys(targetMap).forEach(function(origCol) {
-      let stdKey = targetMap[origCol];
-      obj[stdKey] = row[origCol] !== undefined ? row[origCol] : '';
+      obj[targetMap[origCol]] = row[origCol] !== undefined && row[origCol] !== null ? String(row[origCol]) : '';
     });
     return obj;
   });
@@ -696,64 +1146,75 @@ function applyNormalization() {
   renderPreview();
   document.getElementById('previewCard').style.display = '';
   document.getElementById('previewCard').scrollIntoView({ behavior: 'smooth' });
-  toast('✅ 已应用标准化，' + Object.keys(targetMap).length + ' 列已映射', 'success');
+  toast('已应用标准化，' + Object.keys(targetMap).length + ' 列已映射', 'success');
 }
 
 function renderPreview() {
-  let standardKeys = STANDARD_FIELDS.map(function(f) { return f.key; });
-  let mappedKeys = Object.values(STATE.targetMap);
-  // Only show columns that have data
-  let activeKeys = standardKeys.filter(function(k) {
-    if (mappedKeys.indexOf(k) === -1) return false;
-    for (let i = 0; i < Math.min(10, STATE.normalized.length); i++) {
-      if (STATE.normalized[i][k]) return true;
-    }
-    return false;
-  });
+  let activeKeys = getActiveKeys();
 
   document.getElementById('previewCount').textContent = formatNum(STATE.normalized.length);
   document.getElementById('previewColCount').textContent = activeKeys.length;
 
-  // Header
-  let headerHtml = '<tr>';
-  activeKeys.forEach(function(k) {
-    let fi = STANDARD_FIELDS.find(function(f) { return f.key === k; });
-    headerHtml += '<th>' + (fi ? fi.label : k) + '</th>';
-  });
-  headerHtml += '</tr>';
+  let headerHtml = '<tr>' + activeKeys.map(function(k) {
+    return '<th>' + esc(FIELD_BY_KEY[k].label) + '</th>';
+  }).join('') + '</tr>';
   document.getElementById('previewHead').innerHTML = headerHtml;
 
-  // Body (show first 100 rows)
-  let bodyHtml = '';
-  let showRows = Math.min(STATE.normalized.length, 100);
+  // 预览上限动态调整（数据量大时只渲染200行以保证响应）
+  let previewLimit = STATE.normalized.length > 5000 ? 200 : 100;
+  let showRows = Math.min(STATE.normalized.length, previewLimit);
+  let bodyRows = [];
   for (let r = 0; r < showRows; r++) {
-    bodyHtml += '<tr>';
-    activeKeys.forEach(function(k) {
-      bodyHtml += '<td>' + esc(String(STATE.normalized[r][k] || '')) + '</td>';
-    });
-    bodyHtml += '</tr>';
+    bodyRows.push('<tr>' + activeKeys.map(function(k) {
+      let v = String(STATE.normalized[r][k] || '');
+      return '<td title="' + esc(v) + '">' + esc(v) + '</td>';
+    }).join('') + '</tr>');
   }
-  if (STATE.normalized.length > 100) {
-    bodyHtml += '<tr><td colspan="' + activeKeys.length + '" style="text-align:center;color:let(--muted);padding:16px">… 还有 ' + formatNum(STATE.normalized.length - 100) + ' 行未显示</td></tr>';
+  if (STATE.normalized.length > showRows) {
+    bodyRows.push('<tr><td colspan="' + activeKeys.length + '" class="more-rows-note">… 还有 ' + formatNum(STATE.normalized.length - showRows) + ' 行未显示（导出时包含全部数据）</td></tr>');
   }
-  document.getElementById('previewBody').innerHTML = bodyHtml;
+  document.getElementById('previewBody').innerHTML = bodyRows.join('');
+}
+
+function copyNormalizedAsTSV() {
+  if (!STATE.normalized.length) { toast('没有数据可复制', 'warn'); return; }
+  let activeKeys = getActiveKeys();
+  let lines = [activeKeys.map(function(k) { return FIELD_BY_KEY[k].label; }).join('\t')];
+  STATE.normalized.forEach(function(row) {
+    lines.push(activeKeys.map(function(k) {
+      return String(row[k] || '').replace(/\t/g, ' ').replace(/\n/g, ' ');
+    }).join('\t'));
+  });
+  let text = lines.join('\n');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      toast('已复制 ' + activeKeys.length + ' 列数据到剪贴板', 'success');
+    }, function() { fallbackCopy(text); });
+  } else { fallbackCopy(text); }
+}
+
+function fallbackCopy(text) {
+  let ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); toast('已复制到剪贴板', 'success'); }
+  catch(e) { toast('复制失败，请手动复制', 'error'); }
+  document.body.removeChild(ta);
 }
 
 // ═══════════════════════════════════════════════
 //  EXPORT
 // ═══════════════════════════════════════════════
 function exportExcel() {
-  if (!STATE.normalized.length) { toast('⚠️ 没有数据可导出', 'warn'); return; }
-  let standardKeys = STANDARD_FIELDS.map(function(f) { return f.key; });
-  let mappedKeys = Object.values(STATE.targetMap);
-  let activeKeys = standardKeys.filter(function(k) { return mappedKeys.indexOf(k) !== -1; });
+  if (!STATE.normalized.length) { toast('没有数据可导出', 'warn'); return; }
+  let activeKeys = getActiveKeys();
 
   let exportData = STATE.normalized.map(function(row) {
     let obj = {};
-    activeKeys.forEach(function(k) {
-      let fi = STANDARD_FIELDS.find(function(f) { return f.key === k; });
-      obj[fi ? fi.label : k] = row[k];
-    });
+    activeKeys.forEach(function(k) { obj[FIELD_BY_KEY[k].label] = row[k]; });
     return obj;
   });
 
@@ -761,42 +1222,295 @@ function exportExcel() {
   let wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, '标准化数据');
   XLSX.writeFile(wb, 'TableNorm_标准化_' + new Date().toISOString().slice(0, 10) + '.xlsx');
-  toast('📥 已导出标准 Excel', 'success');
+  toast('已导出标准 Excel（' + activeKeys.length + ' 列）', 'success');
 }
 
 function exportCSV() {
-  if (!STATE.normalized.length) { toast('⚠️ 没有数据可导出', 'warn'); return; }
-  let standardKeys = STANDARD_FIELDS.map(function(f) { return f.key; });
-  let mappedKeys = Object.values(STATE.targetMap);
-  let activeKeys = standardKeys.filter(function(k) { return mappedKeys.indexOf(k) !== -1; });
+  if (!STATE.normalized.length) { toast('没有数据可导出', 'warn'); return; }
+  let activeKeys = getActiveKeys();
+  let headers = activeKeys.map(function(k) { return FIELD_BY_KEY[k].label; });
 
-  let headers = activeKeys.map(function(k) {
-    let fi = STANDARD_FIELDS.find(function(f) { return f.key === k; });
-    return fi ? fi.label : k;
-  });
-
-  let csv = '﻿' + headers.join(',') + '\n';
+  // 修复：每个单元格用双引号包裹，转义内部双引号；保留字段内换行
+  let csv = '\ufeff' + headers.map(function(h) { return '"' + h.replace(/"/g, '""') + '"'; }).join(',') + '\r\n';
   STATE.normalized.forEach(function(row) {
     csv += activeKeys.map(function(k) {
-      let v = String(row[k] || '').replace(/"/g, '""');
+      let v = String(row[k] == null ? '' : row[k]).replace(/"/g, '""');
       return '"' + v + '"';
-    }).join(',') + '\n';
+    }).join(',') + '\r\n';
   });
 
   let blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  triggerDownload(blob, 'TableNorm_标准化_' + new Date().toISOString().slice(0, 10) + '.csv');
+  toast('已导出 CSV（' + activeKeys.length + ' 列 · ' + formatNum(STATE.normalized.length) + ' 行）', 'success');
+}
+
+function exportMappingRules() {
+  // 导出当前映射配置为 JSON，便于复用
+  let rules = {
+    version: '1.0',
+    exportedAt: new Date().toISOString(),
+    source: STATE.fileName || 'unknown',
+    mappings: STATE.mappings.filter(function(m) { return m.target; }).map(function(m) {
+      return { original: m.original, target: m.target, confidence: m.confidence, manual: !!m.manual };
+    }),
+    learnedMap: STATE.learnedMap,
+    customFields: STANDARD_FIELDS.filter(function(f) { return f.custom; })
+  };
+  let blob = new Blob([JSON.stringify(rules, null, 2)], { type: 'application/json' });
+  triggerDownload(blob, 'TableNorm_映射配置_' + new Date().toISOString().slice(0, 10) + '.json');
+  toast('已导出映射配置（含 ' + rules.mappings.length + ' 条规则）', 'success');
+}
+
+function importMappingRules(file) {
+  let reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      let rules = JSON.parse(e.target.result);
+      if (!rules || !rules.mappings) throw new Error('配置格式无效');
+      let count = 0;
+      rules.mappings.forEach(function(r) {
+        let norm = normalizeText(r.original);
+        if (norm && r.target) {
+          STATE.learnedMap[norm] = STATE.learnedMap[norm] || { count: 0, extraSynonyms: [] };
+          STATE.learnedMap[norm].target = r.target;
+          STATE.learnedMap[norm].originalSynonym = r.original;
+          STATE.learnedMap[norm].count++;
+          count++;
+        }
+      });
+      // 导入自定义字段
+      if (Array.isArray(rules.customFields)) {
+        rules.customFields.forEach(function(f) {
+          if (f.key && f.label && !FIELD_BY_KEY[f.key]) {
+            STANDARD_FIELDS.push(f);
+            FIELD_BY_KEY[f.key] = f;
+            STANDARD_KEYS.push(f.key);
+            SYNONYM_DICT[f.key] = f.synonyms || [];
+          }
+        });
+      }
+      persistLearned();
+      toast('已导入 ' + count + ' 条映射规则（已生效）', 'success');
+      // 重新检测
+      if (STATE.headers.length) {
+        STATE.mappings = STATE.headers.map(function(h) {
+          let r = detectColumn(h);
+          return { original: h, target: r.target, confidence: r.score, synonym: r.synonym, manual: false };
+        });
+        renderMapping();
+      }
+    } catch(err) {
+      toast('导入失败: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+function triggerDownload(blob, filename) {
   let url = URL.createObjectURL(blob);
   let a = document.createElement('a');
   a.href = url;
-  a.download = 'TableNorm_标准化_' + new Date().toISOString().slice(0, 10) + '.csv';
+  a.download = filename;
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
-  toast('📄 已导出 CSV', 'success');
+  document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 200);
+}
+
+// ── 批量操作 / 撤销 ──
+function snapshotMappings() {
+  // 在每次修改前快照（用于撤销）
+  STATE.undoStack = STATE.undoStack || [];
+  STATE.undoStack.push(JSON.parse(JSON.stringify(STATE.mappings)));
+  if (STATE.undoStack.length > 20) STATE.undoStack.shift();
+}
+
+function undoLastMappingChange() {
+  if (!STATE.undoStack || !STATE.undoStack.length) {
+    toast('没有可撤销的操作', 'warn');
+    return;
+  }
+  STATE.mappings = STATE.undoStack.pop();
+  renderMapping();
+  toast('已撤销最近一次操作', 'success');
+}
+
+function batchSkipUnmapped() {
+  snapshotMappings();
+  let count = 0;
+  STATE.mappings.forEach(function(m, i) {
+    if (!m.target && m.confidence < 0.5) {
+      m.target = '';
+      m.manual = false;
+      m.confidence = 0;
+      count++;
+    }
+  });
+  renderMapping();
+  toast('已批量跳过 ' + count + ' 个未匹配列', 'success');
+}
+
+function batchAutoMatch() {
+  snapshotMappings();
+  STATE.mappings = STATE.headers.map(function(h) {
+    let r = detectColumn(h);
+    return { original: h, target: r.target, confidence: r.score, synonym: r.synonym, manual: false };
+  });
+  renderMapping();
+  toast('已重新自动匹配所有列', 'success');
+}
+
+function filterMapping(kw) {
+  STATE.mappingFilter = kw || '';
+  renderMapping();
+}
+
+function applyPreset(fieldMappings) {
+  // fieldMappings: [{ original, target }]
+  snapshotMappings();
+  let count = 0;
+  fieldMappings.forEach(function(fm) {
+    let idx = STATE.mappings.findIndex(function(m) { return m.original === fm.original; });
+    if (idx !== -1) {
+      STATE.mappings[idx].target = fm.target;
+      STATE.mappings[idx].manual = true;
+      STATE.mappings[idx].confidence = 1.0;
+      count++;
+    }
+  });
+  renderMapping();
+  toast('已应用预设：' + count + ' 列已更新', 'success');
+}
+
+function saveCurrentAsPreset(name) {
+  let presets = loadPresets();
+  presets[name] = {
+    savedAt: new Date().toISOString(),
+    mappings: STATE.mappings.filter(function(m) { return m.target; }).map(function(m) {
+      return { original: m.original, target: m.target };
+    })
+  };
+  try {
+    localStorage.setItem('gwy_tablenorm_presets', JSON.stringify(presets));
+    STATE.currentPreset = name;
+    toast('已保存预设 "' + name + '"', 'success');
+    return true;
+  } catch(e) {
+    toast('保存失败：' + e.message, 'error');
+    return false;
+  }
+}
+
+function loadPresets() {
+  try {
+    return JSON.parse(localStorage.getItem('gwy_tablenorm_presets') || '{}');
+  } catch(e) { return {}; }
+}
+
+function deletePreset(name) {
+  let presets = loadPresets();
+  delete presets[name];
+  localStorage.setItem('gwy_tablenorm_presets', JSON.stringify(presets));
+  toast('已删除预设 "' + name + '"', 'success');
+}
+
+// ── 自定义标准字段 ──
+function addCustomField(key, label, category) {
+  if (!key || !label) { toast('字段 key 和名称必填', 'warn'); return false; }
+  if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(key)) { toast('key 必须为英文字母开头，可包含数字下划线', 'warn'); return false; }
+  if (FIELD_BY_KEY[key]) { toast('字段 key 已存在', 'warn'); return false; }
+  let field = { key: key, label: label, category: category || '自定义', custom: true, synonyms: [] };
+  STANDARD_FIELDS.push(field);
+  FIELD_BY_KEY[key] = field;
+  STANDARD_KEYS.push(key);
+  SYNONYM_DICT[key] = [];
+  persistCustomFields();
+  toast('已添加字段: ' + label, 'success');
+  return true;
+}
+
+function removeCustomField(key) {
+  let f = FIELD_BY_KEY[key];
+  if (!f || !f.custom) { toast('只能删除自定义字段', 'warn'); return; }
+  STANDARD_FIELDS = STANDARD_FIELDS.filter(function(x) { return x.key !== key; });
+  delete FIELD_BY_KEY[key];
+  let idx = STANDARD_KEYS.indexOf(key);
+  if (idx !== -1) STANDARD_KEYS.splice(idx, 1);
+  delete SYNONYM_DICT[key];
+  // 清理使用此字段的映射
+  STATE.mappings.forEach(function(m) {
+    if (m.target === key) { m.target = ''; m.confidence = 0; m.manual = false; }
+  });
+  persistCustomFields();
+  renderMapping();
+  toast('已删除字段: ' + f.label, 'success');
+}
+
+function addSynonymToField(key, syn) {
+  if (!key || !syn || !FIELD_BY_KEY[key]) return;
+  if (!SYNONYM_DICT[key]) SYNONYM_DICT[key] = [];
+  if (SYNONYM_DICT[key].indexOf(syn) === -1) {
+    SYNONYM_DICT[key].push(syn);
+    persistCustomFields();
+    toast('已添加同义词', 'success');
+  }
+}
+
+function persistCustomFields() {
+  try {
+    localStorage.setItem('gwy_tablenorm_customfields', JSON.stringify(STANDARD_FIELDS.filter(function(f) { return f.custom; })));
+  } catch(e) {}
+}
+
+function loadCustomFields() {
+  try {
+    let raw = localStorage.getItem('gwy_tablenorm_customfields');
+    if (!raw) return;
+    let customs = JSON.parse(raw);
+    customs.forEach(function(f) {
+      if (f.key && f.label && !FIELD_BY_KEY[f.key]) {
+        STANDARD_FIELDS.push(f);
+        FIELD_BY_KEY[f.key] = f;
+        STANDARD_KEYS.push(f.key);
+        SYNONYM_DICT[f.key] = f.synonyms || [];
+      }
+    });
+  } catch(e) {}
+}
+
+// ── 进度反馈 ──
+let progressTimer = null;
+function showProgress(percent, label) {
+  let bar = document.getElementById('loaderBar');
+  if (!bar) return;
+  bar.parentElement.parentElement.style.opacity = '1';
+  bar.parentElement.parentElement.parentElement.style.display = 'flex';
+  bar.style.width = Math.max(0, Math.min(100, percent)) + '%';
+  let lbl = bar.parentElement.parentElement.querySelector('.progress-label');
+  if (label && !lbl) {
+    lbl = document.createElement('div');
+    lbl.className = 'progress-label';
+    lbl.style.cssText = 'font-size:12px;color:var(--muted);margin-top:8px';
+    bar.parentElement.parentElement.appendChild(lbl);
+  }
+  if (lbl) lbl.textContent = label || '';
+}
+
+function hideProgress() {
+  let loader = document.getElementById('appLoader');
+  if (!loader) return;
+  loader.style.opacity = '0';
+  setTimeout(function() { if (loader.parentNode) loader.parentNode.removeChild(loader); }, 300);
 }
 
 // ═══════════════════════════════════════════════
 //  INIT
 // ═══════════════════════════════════════════════
 function init() {
+  // 加载历史学习 + 自定义字段
+  loadLearned();
+  loadCustomFields();
+
   // Hide skeleton
   (function hideLoader() {
     let loader = document.getElementById('appLoader');
@@ -817,31 +1531,56 @@ function init() {
     }
   })();
 
-  // Theme restore
+  // Theme restore (backward-compatible: try both keys)
   try {
-    let saved = JSON.parse(localStorage.getItem('gwy_tablenorm_settings') || localStorage.getItem('tablenorm_settings') || '{}');
-    if (saved.theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    let raw = localStorage.getItem('gwy_tablenorm_settings') || localStorage.getItem('tablenorm_settings');
+    if (raw) {
+      let saved = JSON.parse(raw);
+      if (saved && saved.theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    }
   } catch(e) {}
-  document.getElementById('themeToggle').textContent = document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+  setThemeIcon();
   document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-  // Upload zone
+  // Upload zone — click anywhere except action buttons opens the file picker
   let uz = document.getElementById('uploadZone'), fi = document.getElementById('fileInput');
-  uz.addEventListener('click', function() { fi.click(); });
+  uz.addEventListener('click', function(e) {
+    if (e.target.closest('button')) return;
+    fi.click();
+  });
   uz.addEventListener('dragover', function(e) { e.preventDefault(); uz.classList.add('dragover'); });
   uz.addEventListener('dragleave', function() { uz.classList.remove('dragover'); });
-  uz.addEventListener('drop', function(e) { e.preventDefault(); uz.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
-  fi.addEventListener('change', function() { handleFiles(fi.files); });
-
-  // Buttons
-  document.getElementById('btnAutoMap').addEventListener('click', function() {
-    STATE.mappings = STATE.headers.map(function(h) {
-      let result = detectColumn(h);
-      return { original: h, target: result.target, confidence: result.score, synonym: result.synonym };
-    });
-    renderMapping();
-    toast('🪄 已重新匹配', 'success');
+  uz.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uz.classList.remove('dragover');
+    if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) {
+      document.getElementById('demoBanner').classList.remove('show');
+      handleFiles(e.dataTransfer.files);
+    }
   });
+  fi.addEventListener('change', function() {
+    document.getElementById('demoBanner').classList.remove('show');
+    handleFiles(fi.files);
+    fi.value = '';
+  });
+
+  // Demo buttons
+  document.getElementById('btnUploadBrowse').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('demoBanner').classList.remove('show');
+    fi.click();
+  });
+  document.getElementById('btnDemo').addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (typeof XLSX === 'undefined') { toast('XLSX 库尚未加载完成，请稍候', 'warn'); return; }
+    loadDemo();
+  });
+  document.getElementById('demoBannerDismiss').addEventListener('click', function() {
+    document.getElementById('demoBanner').classList.remove('show');
+  });
+
+  // Mapping buttons
+  document.getElementById('btnAutoMap').addEventListener('click', batchAutoMatch);
   document.getElementById('btnApply').addEventListener('click', applyNormalization);
   document.getElementById('btnBack').addEventListener('click', function() {
     document.getElementById('previewCard').style.display = 'none';
@@ -850,17 +1589,189 @@ function init() {
   document.getElementById('btnExport').addEventListener('click', exportExcel);
   document.getElementById('btnExportCSV').addEventListener('click', exportCSV);
 
-  // CDN fallback
+  // 增强按钮
+  let btnUndo = document.getElementById('btnUndo');
+  if (btnUndo) btnUndo.addEventListener('click', undoLastMappingChange);
+  let btnSkip = document.getElementById('btnSkipUnmapped');
+  if (btnSkip) btnSkip.addEventListener('click', batchSkipUnmapped);
+  let btnSavePreset = document.getElementById('btnSavePreset');
+  if (btnSavePreset) btnSavePreset.addEventListener('click', function() { openPresetDialog('save'); });
+  let btnLoadPreset = document.getElementById('btnLoadPreset');
+  if (btnLoadPreset) btnLoadPreset.addEventListener('click', function() { openPresetDialog('load'); });
+  let btnImportRules = document.getElementById('btnImportRules');
+  if (btnImportRules) btnImportRules.addEventListener('click', function() { document.getElementById('rulesFileInput').click(); });
+  let rulesInput = document.getElementById('rulesFileInput');
+  if (rulesInput) rulesInput.addEventListener('change', function() {
+    if (rulesInput.files && rulesInput.files[0]) importMappingRules(rulesInput.files[0]);
+    rulesInput.value = '';
+  });
+  let btnExportRules = document.getElementById('btnExportRules');
+  if (btnExportRules) btnExportRules.addEventListener('click', exportMappingRules);
+  let btnCopy = document.getElementById('btnCopyTSV');
+  if (btnCopy) btnCopy.addEventListener('click', copyNormalizedAsTSV);
+  let btnAddField = document.getElementById('btnAddField');
+  if (btnAddField) btnAddField.addEventListener('click', function() { openCustomFieldDialog(); });
+  let searchInput = document.getElementById('mappingSearch');
+  if (searchInput) {
+    let searchTimer = null;
+    searchInput.addEventListener('input', function() {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function() { filterMapping(searchInput.value); }, 150);
+    });
+  }
+
+  // 模态框关闭
+  document.querySelectorAll('[data-close-modal]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      let m = btn.closest('.modal-backdrop');
+      if (m) m.style.display = 'none';
+    });
+  });
+  document.querySelectorAll('.modal-backdrop').forEach(function(m) {
+    m.addEventListener('click', function(e) {
+      if (e.target === m) m.style.display = 'none';
+    });
+  });
+
+  // SheetJS fallback
   if (typeof XLSX === 'undefined') {
     setTimeout(function() {
       if (typeof XLSX === 'undefined') {
-        document.getElementById('uploadZone').innerHTML = '<div class="upload-icon">⚠️</div><div class="upload-title">库加载失败</div><div class="upload-hint">SheetJS 未能加载，请检查网络后刷新页面</div>';
+        let zone = document.getElementById('uploadZone');
+        if (zone) zone.innerHTML = '<div class="upload-icon" style="color:var(--danger)">' + ICONS.alertTri + '</div><div class="upload-title">库加载失败</div><div class="upload-hint">SheetJS 未能加载，请检查网络后刷新页面</div>';
       }
     }, 10000);
   }
 
   // Test mode
   if (window.location.search.indexOf('test=1') !== -1) setTimeout(runTests, 500);
+}
+
+// ── 模态框：预设管理 ──
+function openPresetDialog(mode) {
+  let modal = document.getElementById('presetModal');
+  let body = document.getElementById('presetModalBody');
+  if (!modal || !body) return;
+  let presets = loadPresets();
+  let names = Object.keys(presets);
+  let html = '';
+  if (mode === 'save') {
+    html = '<h3 style="margin-bottom:12px">保存为预设</h3>' +
+           '<div style="display:flex;gap:8px;margin-bottom:16px">' +
+           '<input id="presetName" type="text" placeholder="预设名称 (如: 广东省考格式)" ' +
+           'style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--card);color:var(--text);font:inherit">' +
+           '<button class="btn btn-primary btn-sm" id="presetSaveConfirm">保存</button>' +
+           '</div>' +
+           '<div style="font-size:13px;color:var(--muted)">当前已映射 ' + STATE.mappings.filter(function(m){return m.target;}).length + ' 列</div>';
+  } else {
+    if (!names.length) {
+      html = '<h3 style="margin-bottom:12px">加载预设</h3>' +
+             '<div style="color:var(--muted);padding:16px;text-align:center">暂无保存的预设<br><small>使用"保存预设"按钮将当前映射方案保存为预设</small></div>';
+    } else {
+      html = '<h3 style="margin-bottom:12px">加载预设</h3>' +
+             '<div class="preset-list">' + names.map(function(n) {
+               let p = presets[n];
+               let cnt = p.mappings ? p.mappings.length : 0;
+               let date = p.savedAt ? new Date(p.savedAt).toLocaleString('zh-CN') : '';
+               return '<div class="preset-item" data-name="' + esc(n) + '">' +
+                        '<div class="preset-meta">' +
+                          '<div class="preset-name">' + esc(n) + '</div>' +
+                          '<div class="preset-info">' + cnt + ' 列 · ' + date + '</div>' +
+                        '</div>' +
+                        '<div class="preset-actions">' +
+                          '<button class="btn btn-primary btn-sm" data-action="apply">应用</button>' +
+                          '<button class="btn btn-outline btn-sm" data-action="delete">删除</button>' +
+                        '</div>' +
+                      '</div>';
+             }).join('') + '</div>';
+    }
+  }
+  body.innerHTML = html;
+  modal.style.display = 'flex';
+
+  if (mode === 'save') {
+    let input = document.getElementById('presetName');
+    let btn = document.getElementById('presetSaveConfirm');
+    if (input) input.focus();
+    let confirm = function() {
+      let name = (input && input.value || '').trim();
+      if (!name) { toast('请输入预设名称', 'warn'); return; }
+      if (saveCurrentAsPreset(name)) {
+        modal.style.display = 'none';
+      }
+    };
+    if (btn) btn.addEventListener('click', confirm);
+    if (input) input.addEventListener('keydown', function(e) { if (e.key === 'Enter') confirm(); });
+  } else {
+    body.querySelectorAll('[data-action="apply"]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        let item = btn.closest('.preset-item');
+        let name = item.getAttribute('data-name');
+        let presets = loadPresets();
+        if (presets[name] && presets[name].mappings) {
+          applyPreset(presets[name].mappings);
+          modal.style.display = 'none';
+        }
+      });
+    });
+    body.querySelectorAll('[data-action="delete"]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        let item = btn.closest('.preset-item');
+        let name = item.getAttribute('data-name');
+        if (confirm('确定删除预设 "' + name + '"?')) {
+          deletePreset(name);
+          openPresetDialog('load');
+        }
+      });
+    });
+  }
+}
+
+// ── 模态框：自定义字段 ──
+function openCustomFieldDialog() {
+  let modal = document.getElementById('customFieldModal');
+  let body = document.getElementById('customFieldBody');
+  if (!modal || !body) return;
+  let html = '<h3 style="margin-bottom:12px">自定义标准字段</h3>' +
+             '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">' +
+             '<input id="cfKey" placeholder="字段 key (英文, 如 bonus)" class="cf-input">' +
+             '<input id="cfLabel" placeholder="显示名称 (如 年终奖金)" class="cf-input">' +
+             '</div>' +
+             '<div style="display:flex;gap:8px;margin-bottom:16px">' +
+             '<input id="cfCat" placeholder="分类 (可选, 默认: 自定义)" class="cf-input" style="flex:1">' +
+             '<button class="btn btn-primary btn-sm" id="cfAdd">添加字段</button>' +
+             '</div>' +
+             '<div style="font-size:12px;color:var(--muted);margin-bottom:8px">已添加的自定义字段：</div>' +
+             '<div id="cfList" class="cf-list">' +
+               STANDARD_FIELDS.filter(function(f) { return f.custom; }).map(function(f) {
+                 return '<div class="cf-item" data-key="' + esc(f.key) + '">' +
+                          '<div><strong>' + esc(f.label) + '</strong> <code>' + esc(f.key) + '</code></div>' +
+                          '<button class="btn btn-outline btn-sm" data-action="del">删除</button>' +
+                        '</div>';
+               }).join('') +
+             '</div>';
+  body.innerHTML = html;
+  modal.style.display = 'flex';
+
+  document.getElementById('cfAdd').addEventListener('click', function() {
+    let k = document.getElementById('cfKey').value.trim();
+    let l = document.getElementById('cfLabel').value.trim();
+    let c = document.getElementById('cfCat').value.trim();
+    if (addCustomField(k, l, c)) {
+      renderMapping();
+      openCustomFieldDialog();
+    }
+  });
+  body.querySelectorAll('[data-action="del"]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      let item = btn.closest('.cf-item');
+      let key = item.getAttribute('data-key');
+      if (confirm('确定删除自定义字段 "' + key + '"?')) {
+        removeCustomField(key);
+        openCustomFieldDialog();
+      }
+    });
+  });
 }
 
 // ═══════════════════════════════════════════════
@@ -873,7 +1784,6 @@ function runTests() {
     catch(e) { results.push({ name: name, pass: false, error: e.message }); }
   }
 
-  // Matching engine tests
   t('exact match: 部门名称→department', function() {
     let r = detectColumn('部门名称');
     return r.target === 'department' && r.score === 1.0;
@@ -907,32 +1817,53 @@ function runTests() {
     return r.score < 0.5;
   });
 
-  // Jaccard similarity
   t('jaccard same string = 1', function() { return jaccardSimilarity('abc', 'abc') === 1; });
   t('jaccard different strings = 0', function() { return jaccardSimilarity('abc', 'xyz') === 0; });
+  t('jaccard empty string = 0', function() { return jaccardSimilarity('', 'abc') === 0 && jaccardSimilarity('abc', '') === 0; });
+  t('LCS empty returns 0 not NaN', function() { return longestCommonSubstring('', 'abc') === 0; });
 
-  // Schema
-  t('STANDARD_FIELDS has 16 fields', function() { return STANDARD_FIELDS.length === 16; });
+  t('normalizeText strips brackets and dots', function() {
+    return normalizeText('专业（类）') === '专业类';
+  });
+
+  t('CSV parseCSVLine handles escaped quotes', function() {
+    let r = parseCSVLine('a,"b""c",d');
+    return r[0] === 'a' && r[1] === 'b"c' && r[2] === 'd';
+  });
+
+  t('STANDARD_FIELDS has 16 fields', function() { return STANDARD_FIELDS.length >= 16; });
   t('SYNONYM_DICT covers all fields', function() {
     return STANDARD_FIELDS.every(function(f) { return SYNONYM_DICT[f.key] && SYNONYM_DICT[f.key].length > 0; });
   });
 
-  // Utilities
   t('formatNum', function() { return formatNum(12345) === '12,345'; });
   t('esc HTML', function() { return esc('<b>').indexOf('&lt;') !== -1; });
+  t('FIELD_BY_KEY lookup', function() { return FIELD_BY_KEY.department.label === '部门名称'; });
 
-  // Output
+  t('recordLearning persists to learnedMap', function() {
+    let before = Object.keys(STATE.learnedMap).length;
+    recordLearning('某某自定义列', 'department', '某某自定义列');
+    let after = Object.keys(STATE.learnedMap).length;
+    return after === before + 1;
+  });
+
+  t('detectColumn uses learned mapping first', function() {
+    recordLearning('某某特殊列', 'count', '某某特殊列');
+    let r = detectColumn('某某特殊列');
+    return r.target === 'count' && r.score === 1.0;
+  });
+
   let passed = results.filter(function(r) { return r.pass; }).length;
   let total = results.length;
-  let color = passed === total ? 'green' : 'orange';
-  console.log('%c📋 TableNorm Tests: ' + passed + '/' + total + ' passed', 'font-size:16px;font-weight:bold;color:' + color);
-  results.forEach(function(r) { console.log(r.pass ? '  ✅' : '  ❌', r.name, r.error ? '(' + r.error + ')' : ''); });
-  if (passed < total) console.warn('⚠ ' + (total - passed) + ' tests failed');
-  else console.log('✅ All tests passed!');
+  let ok = passed === total;
+  console.log('%cTableNorm Tests: ' + passed + '/' + total + (ok ? ' passed' : ' failed'), 'font-size:14px;font-weight:bold;color:' + (ok ? '#16a34a' : '#d97706'));
+  results.forEach(function(r) {
+    if (r.pass) console.log('  PASS', r.name);
+    else console.warn('  FAIL', r.name, r.error ? '(' + r.error + ')' : '');
+  });
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
-window.addEventListener('beforeunload',function(){var e=document.getElementById('exitOverlay');if(e)e.classList.add('go');});
 </script>
 </body>
 </html>
